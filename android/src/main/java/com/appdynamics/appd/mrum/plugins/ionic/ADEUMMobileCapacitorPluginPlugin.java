@@ -19,4 +19,51 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         ret.put("value", implementation.echo(value));
         call.resolve(ret);
     }
+
+    @PluginMethod
+    public void getVersion(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("version", implementation.getVersion());
+        call.resolve(ret);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void onReset(PluginCall call) {
+        implementation.onReset();
+    }
+
+    @PluginMethod
+    public void checkPluginInitialized(PluginCall call) {
+        boolean is_initialized = false;
+        is_initialized =    implementation.checkPluginInitialized();
+        //JSObject ret = new JSObject();
+        if (!is_initialized){
+            //this may be bad and should just return true or false or reject and resolve
+            call.reject("Plugin was not initialized due to missing or invalid App Key.");
+            return;
+        } else {
+            //ret.put("initialized", is_initialized);
+            //call.resolve(ret);
+            call.resolve();
+        }
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void flush(PluginCall call) {
+        implementation.flush();
+        
+    }
+
+    @PluginMethod
+    public void crash(PluginCall call) {
+        JSObject ret = new JSObject();
+        try{
+            implementation.crash();
+        }catch(RuntimeException re){
+            ret.put("exception_type_name", re.getClass().getCanonicalName());
+            ret.put("exception_message", re.getMessage());
+            call.resolve(ret);
+        }
+        
+    }
 }

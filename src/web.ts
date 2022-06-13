@@ -9,4 +9,11 @@ export class ADEUMMobileCapacitorPluginWeb
     console.log('ECHO', options);
     return options;
   }
+  async getVersion(): Promise<{ version: string }> {
+    console.log('1.1.1');
+    return { version: '1.1.1' };
+  }
+  async onReset(): Promise<void> {
+    return; 
+  }
 }

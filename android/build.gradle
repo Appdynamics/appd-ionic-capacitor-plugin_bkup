@@ -8,14 +8,16 @@ ext {
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.appdynamics:appdynamics-gradle-plugin:20.7.0'
     }
 }
 
 apply plugin: 'com.android.library'
+//apply plugin: 'adeum'
 
 android {
     compileSdkVersion project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 30
@@ -44,7 +46,6 @@ android {
 repositories {
     google()
     mavenCentral()
-    jcenter()
 }
 
 
