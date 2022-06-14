@@ -7,11 +7,11 @@
     ADEUMMobileCapacitorPlugin: {
       appKey: "key_here",
       collectorUrl: "http://account.appdynamics.com",
-      screenshotUrl: "",
-      screenshotsEnabled: "",
-      loggingLevel: "",
-      reachabilityHost: "",
-      interactionCaptureMode: ""
+      screenshotUrl: '',
+      screenshotsEnabled: '',
+      loggingLevel: '',
+      reachabilityHost: '',
+      interactionCaptureMode: '',
     }
   }
 }

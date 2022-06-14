@@ -1,6 +1,5 @@
 import Foundation
 import Capacitor
-import ADEUMInstrumentation
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -15,8 +14,5 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         call.resolve([
             "value": implementation.echo(value)
         ])
-    }
-    override public func load() {
-        
     }
 }

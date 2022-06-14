@@ -1,0 +1,17 @@
+{
+  "appId": "com.example.plugin",
+  "appName": "example",
+  "bundledWebRuntime": true,
+  "webDir": "www",
+  "plugins": {
+    ADEUMMobileCapacitorPlugin: {
+      appKey: '"key_here"',
+      collectorUrl: 'http://account.appdynamics.com',
+      screenshotUrl: '',
+      screenshotsEnabled: '',
+      loggingLevel: '',
+      reachabilityHost: '',
+      interactionCaptureMode: '',
+    }
+  }
+}

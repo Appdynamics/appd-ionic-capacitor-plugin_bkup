@@ -1,4 +1,3 @@
-/// <reference types="@capacitor/cli" />
 export interface ADEUMMobileCapacitorPluginPlugin {
   echo(options: { value: string }): Promise<{ value: string }>;
   getVersion(): Promise<{ version: string }>;
@@ -6,7 +5,9 @@ export interface ADEUMMobileCapacitorPluginPlugin {
 }
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
-    ADEUMMobileCapacitorPlugin?: {
+    
+     ADEUMMobileCapacitorPlugin?: {
+      
       appKey: String;
       collectorUrl: String;
       screenshotUrl: String;

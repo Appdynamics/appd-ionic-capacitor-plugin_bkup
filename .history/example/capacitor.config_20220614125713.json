@@ -11,7 +11,7 @@
       screenshotsEnabled: "",
       loggingLevel: "",
       reachabilityHost: "",
-      interactionCaptureMode: ""
+      interactionCaptureMode: "",
     }
   }
 }

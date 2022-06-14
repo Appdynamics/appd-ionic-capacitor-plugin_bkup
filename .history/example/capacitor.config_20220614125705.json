@@ -10,8 +10,8 @@
       screenshotUrl: "",
       screenshotsEnabled: "",
       loggingLevel: "",
-      reachabilityHost: "",
-      interactionCaptureMode: ""
+      reachabilityHost: '',
+      interactionCaptureMode: '',
     }
   }
 }

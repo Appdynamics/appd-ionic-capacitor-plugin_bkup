@@ -9,9 +9,9 @@
       collectorUrl: "http://account.appdynamics.com",
       screenshotUrl: "",
       screenshotsEnabled: "",
-      loggingLevel: "",
-      reachabilityHost: "",
-      interactionCaptureMode: ""
+      loggingLevel: '',
+      reachabilityHost: '',
+      interactionCaptureMode: '',
     }
   }
 }

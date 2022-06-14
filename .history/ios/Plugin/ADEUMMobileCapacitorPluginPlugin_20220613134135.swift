@@ -16,7 +16,4 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
             "value": implementation.echo(value)
         ])
     }
-    override public func load() {
-        
-    }
 }

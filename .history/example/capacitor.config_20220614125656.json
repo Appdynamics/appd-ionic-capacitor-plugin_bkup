@@ -8,10 +8,10 @@
       appKey: "key_here",
       collectorUrl: "http://account.appdynamics.com",
       screenshotUrl: "",
-      screenshotsEnabled: "",
-      loggingLevel: "",
-      reachabilityHost: "",
-      interactionCaptureMode: ""
+      screenshotsEnabled: '',
+      loggingLevel: '',
+      reachabilityHost: '',
+      interactionCaptureMode: '',
     }
   }
 }
