@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
       ADEUM_SCREENSHOTS_ENABLED: false,
       ADEUM_LOGGING_LEVEL: 0,
       ADEUM_REACHABILITY_HOST: '',
-      ADEUM_INTERACTION_CAPTURE_MODE: 0,
+      ADEUM_INTERACTION_CAPTURE_MODE: '',
     },
   },
 };

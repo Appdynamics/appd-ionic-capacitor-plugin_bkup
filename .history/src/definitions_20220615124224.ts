@@ -6,7 +6,6 @@ export interface ADEUMMobileCapacitorPluginPlugin {
   reportMetricWithName(options: { name: string; value: number }): void;
   leaveBreadcrumb(options: { name: string }): void;
   setUserData(options: { key: string; value: string }): void;
-  removeUserData(options: { key: string }): void;
   getVersion(): Promise<{ version: string }>;
   onReset(): void;
 }

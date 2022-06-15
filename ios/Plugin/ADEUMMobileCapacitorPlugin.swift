@@ -1,63 +1,43 @@
 import Foundation
 import ADEUMInstrumentation
+import Capacitor
 
 @objc public class ADEUMMobileCapacitorPlugin: NSObject {
     @objc public func echo(_ value: String) -> String {
         print(value)
         return value
     }
-    @objc public func pluginInitialize() -> Void {
-        self.keymap = [[NSMutableDictionary alloc] initWithCapacity:0];
-        // Load Agent configuration settings from info.plist
-        NSDictionary *adeumSettings = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"ADEUM_Settings"];
-        NSString *appKey = [adeumSettings objectForKey:@"ADEUM_APP_KEY"];
-        NSString *collectorUrl = [adeumSettings objectForKey:@"ADEUM_COLLECTOR_URL"];
-        NSString *screenshotUrl = [adeumSettings objectForKey:@"ADEUM_SCREENSHOT_URL"];
-        NSString *screenshotsEnabled = [adeumSettings objectForKey:@"ADEUM_SCREENSHOTS_ENABLED"];
-        NSNumber *loggingLevel = @([[adeumSettings objectForKey:@"ADEUM_LOGGING_LEVEL"] intValue]);
-        NSString *reachabilityHost = [adeumSettings objectForKey:@"ADEUM_REACHABILITY_HOST"];
-        NSNumber *interactionCaptureMode = @([[adeumSettings objectForKey:@"ADEUM_INTERACTION_CAPTURE_MODE"] intValue]);
-
-        if (appKey) {
-            // If appKey malformed this will throw exception.
-            self.config = [[ADEumAgentConfiguration alloc] initWithAppKey:appKey];
-
-            if (![self setCollectorUrl:collectorUrl]) {
-                NSLog(@"Agent failed to start due to bad COLLECTOR_URL param.");
-                return;
-            }
-
-            if (![self setLoggingLevel:loggingLevel]) {
-                NSLog(@"Agent failed to start due to bad LOGGING_LEVEL param.");
-                return;
-            }
-
-            if (![self setScreenshotsEnabled:screenshotsEnabled]) {
-                NSLog(@"Agent failed to start due to bad SCREENSHOTS_ENABLED param.");
-                return;
-            }
-
-            if (![self setScreenshotUrl:screenshotUrl]) {
-                NSLog(@"Agent failed to start due to bad SCREENSHOT_URL param.");
-                return;
-            }
-
-            if (![self setInteractionCaptureMode:interactionCaptureMode]) {
-                NSLog(@"Agent failed to start due to bad INTERACTION_CAPTURE_MODE param.");
-                return;
-            }
-
-            if (![self setReachabilityHostName:reachabilityHost]) {
-                NSLog(@"Agent failed to start due to bad REACHABILITY_HOST param.");
-                return;
-            }
-
-            [ADEumInstrumentation initWithConfiguration:_config a:ADEumPluginHybridAgentType b:ADEumPluginHybridAgentVersion];
-            // Force generation of "App Start" beacon if API call is available
-            SEL gabsSelector = NSSelectorFromString(@"generateAppStartBeacon");
-            if ([ADEumInstrumentation respondsToSelector:gabsSelector]) {
-                [ADEumInstrumentation performSelector:gabsSelector];
-            }
-        }
+    @objc public func pluginInitialize(config: ADEumAgentConfiguration) -> Void {
+        ADEumInstrumentation.initWith(config)
     }
+    @objc public func startTimerWithName(name: String) -> Void {
+        ADEumInstrumentation.startTimer(withName: name)
+    }
+    @objc public func stopTimerWithName(name: String) -> Void {
+        ADEumInstrumentation.stopTimer(withName: name)
+    }
+    @objc public func reportMetricWithName(name: String, value: Int64) -> Void {
+        ADEumInstrumentation.reportMetric(withName: name, value: value)
+    }
+    @objc public func leaveBreadcrumb(name: String?) -> Void {
+        ADEumInstrumentation.leaveBreadcrumb(name)
+    }
+    @objc public func setUserData(key: String, value: String) -> Void {
+        ADEumInstrumentation.setUserData(key, value: value)
+    }
+    @objc public func removeUserData(key: String) -> Void {
+        ADEumInstrumentation.removeUserData(key)
+    }
+    @objc public func takeScreenshot() -> Void {
+        ADEumInstrumentation.takeScreenshot()
+    }
+    /*
+     - (void)takeScreenshot:(CDVInvokedUrlCommand *)command {
+         NSLog(@"Obj-C takeScreenshot called:" );
+         [ADEumInstrumentation takeScreenshot];
+
+         CDVPluginResult *result = [self finalizeSuccessfulResult:nil];
+         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+     }
+     */
 }
