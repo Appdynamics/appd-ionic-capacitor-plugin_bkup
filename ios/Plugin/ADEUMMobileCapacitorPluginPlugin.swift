@@ -66,6 +66,22 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         implementation.takeScreenshot()
         call.resolve()
     }
+    @objc func beginCall(_ call: CAPPluginCall) {
+        let className = call.getString("className") ?? nil
+        let methodName = call.getString("methodName") ?? nil
+        let withArguments = call.getArray("withArguments", [])
+        
+        if className == nil || methodName == nil {
+            call.resolve([
+                "call_tracker": nil
+            ])
+            return
+        }
+        call.resolve([
+            "call_tracker": implementation.beginCall(className: className!, methodName: methodName!, withArguments: withArguments) as Any
+        ])
+        return
+    }
     override public func load() {
         if let appKey = getConfigValue("ADEUM_APP_KEY") as? String{
             config.appKey = appKey

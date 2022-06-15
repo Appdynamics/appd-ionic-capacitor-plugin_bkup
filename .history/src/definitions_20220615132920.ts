@@ -7,7 +7,7 @@ export interface ADEUMMobileCapacitorPluginPlugin {
   leaveBreadcrumb(options: { name: string }): void;
   setUserData(options: { key: string; value: string }): void;
   removeUserData(options: { key: string }): void;
-  takeScreenshot(): void;
+  takeScreenshot(void)
   getVersion(): Promise<{ version: string }>;
   onReset(): void;
 }
