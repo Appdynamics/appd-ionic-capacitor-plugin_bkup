@@ -41,42 +41,40 @@ import Capacitor
     @objc public func beginCall(className: String, methodName: String, withArguments: [Any]) -> Any? {
         return ADEumInstrumentation.beginCall(className, methodName: methodName, withArguments: withArguments)
     }
+    
+    @objc public func endCall(tracker: Any) -> Void {
+        ADEumInstrumentation.endCall(tracker)
+    }
+    
+    @objc public func beginHttpRequest(url: URL) -> ADEumHTTPRequestTracker{
+        return ADEumHTTPRequestTracker.init(url: url)
+    }
     /*
-     - (void)beginCall:(CDVInvokedUrlCommand*)command {
+     - (void)beginHttpRequest:(CDVInvokedUrlCommand*)command {
          CDVPluginResult *result;
-
          @try {
-             if ([command.arguments count] != 3) {
+             if ([command.arguments count] != 1) {
                  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-                 NSLog(@"Obj-C beginCall called -- bad command");
+                 NSLog(@"Obj-C beginHttpRequest called -- bad command");
              } else {
-                 NSString *name = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
-                 NSString *selName = [command argumentAtIndex:1 withDefault:nil andClass:[NSString class]];
+                 NSString *url = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
+                 NSLog(@"beginHttpRequest %@", url);
 
-                 NSInteger additionalArgumentCount = [[command arguments] count] - 2;
-                 NSArray *additionalArguments = nil;
-                 if (additionalArgumentCount > 0) {
-                     additionalArguments = [[command arguments] subarrayWithRange:NSMakeRange(2, additionalArgumentCount)];
-                 }
-
-                 // Generate tracking key
+                 // get UUID for key
                  NSString *key = [self generateKey];
-                 NSLog(@"beginCall with key:%@ name:%@ selector:%@", key, name, selName);
+                 NSURL *nsurl = [[NSURL alloc] initWithString:url]; // new url from string
 
-                 SEL sel = NSSelectorFromString(selName);
-
-                 if ([name length] > 0 && [selName length] > 0) {
-                     id tracker = [ADEumInstrumentation beginCall:name selector:sel withArguments:additionalArguments];
+                 if ([url length] > 0 && nsurl != nil) {
+                     ADEumHTTPRequestTracker *tracker = [ADEumHTTPRequestTracker requestTrackerWithURL:nsurl];
                      self.keymap[key] = tracker;
                      result = [self finalizeSuccessfulResult:key];
                  } else {
-                     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Name or method missing or invalid"];
+                     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR  messageAsString:@"Missing or invalid URL"];
                  }
              }
          } @catch (NSException *exception) {
              result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[exception reason]];
          }
-
          [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
      }
      */

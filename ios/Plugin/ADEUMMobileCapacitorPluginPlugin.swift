@@ -72,9 +72,8 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         let withArguments = call.getArray("withArguments", [])
         
         if className == nil || methodName == nil {
-            call.resolve([
-                "call_tracker": nil
-            ])
+            //do nothing and return nothing
+            call.resolve()
             return
         }
         call.resolve([
@@ -82,6 +81,26 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         ])
         return
     }
+    @objc func endCall(_ call: CAPPluginCall) {
+        let tracker = call.getObject("call_tracker") as Any
+        implementation.endCall(tracker: tracker)
+        call.resolve()
+    }
+    @objc func beginHttpRequest(_ call: CAPPluginCall) {
+        let url_string = call.getString("url") ?? nil
+        if url_string == nil {
+            //do nothing and return nothing
+            call.resolve()
+            return
+        }
+        let url = URL.init(string:url_string!)
+        let http_tracker = implementation.beginHttpRequest(url: url!)
+        call.resolve([
+            "http_tracker": http_tracker
+        ])
+        return
+    }
+    
     override public func load() {
         if let appKey = getConfigValue("ADEUM_APP_KEY") as? String{
             config.appKey = appKey
