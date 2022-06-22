@@ -100,7 +100,61 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         ])
         return
     }
+    @objc func reportDone(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        implementation.reportDone(tracker: http_tracker)
+        call.resolve()
+    }
     
+    @objc func withResponseCode(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let statusCode = NSNumber.init(nonretainedObject: call.getInt("status_code"))
+        implementation.withResponseCode(tracker: http_tracker, statusCode: statusCode)
+        call.resolve()
+    }
+    
+    @objc func withResponseContentLength(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let content_length = NSNumber.init(nonretainedObject: call.getInt("content_length"))
+        implementation.withResponseContentLength(tracker: http_tracker, responseContentLength: content_length)
+        call.resolve()
+    }
+    
+    @objc func withRequestContentLength(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let content_length = NSNumber.init(nonretainedObject: call.getInt("content_length"))
+        implementation.withRequestContentLength(tracker: http_tracker, requestContentLength: content_length)
+        call.resolve()
+    }
+    
+    @objc func withResponseHeaderFields(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let headers = call.getObject("http_headers")! as NSDictionary
+        implementation.withResponseHeaderFields(tracker: http_tracker, responseHeaders: headers)
+        call.resolve()
+    }
+    
+    @objc func withRequestHeaderFields(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let headers = call.getObject("http_headers")! as NSDictionary
+        implementation.withRequestHeaderFields(tracker: http_tracker, requestHeaders: headers)
+        call.resolve()
+    }
+    
+    @objc func withInstrumentationSource(_ call: CAPPluginCall) {
+        let http_tracker = call.getObject("http_tracker") as Any
+        let source = call.getString("information_source") ?? ""
+        implementation.withInstrumentationSource(tracker: http_tracker, informationSource: source)
+        call.resolve()
+    }
+    
+    @objc func getCorrelationHeaders(_ call: CAPPluginCall) {
+        let headers = implementation.getCorrelationHeaders()
+        call.resolve([
+            "headers": headers
+        ])
+        return
+    }
     override public func load() {
         if let appKey = getConfigValue("ADEUM_APP_KEY") as? String{
             config.appKey = appKey

@@ -46,30 +46,91 @@ import Capacitor
         ADEumInstrumentation.endCall(tracker)
     }
     
+    @objc public func getCorrelationHeaders() -> Any {
+        let headers = ADEumServerCorrelationHeaders.generate()
+        return headers
+    }
+    
     @objc public func beginHttpRequest(url: URL) -> ADEumHTTPRequestTracker{
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
         return ADEumHTTPRequestTracker.init(url: url)
     }
+    
+    @objc public func reportDone(tracker: Any){
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        return http_tracker.reportDone()
+    }
+    
+    
+    @objc public func withResponseCode(tracker: Any, statusCode: NSNumber) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        http_tracker.statusCode = statusCode
+    }
+    
+    @objc public func withResponseContentLength(tracker: Any, responseContentLength: NSNumber) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        let tmpHeaders = http_tracker.allHeaderFields as! NSMutableDictionary
+        tmpHeaders.setValue(responseContentLength, forKeyPath: "Content-Length")
+        http_tracker.allHeaderFields = tmpHeaders as? [AnyHashable : Any]
+    }
+    
+    @objc public func withRequestContentLength(tracker: Any, requestContentLength: NSNumber) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        let tmpHeaders = http_tracker.allRequestHeaderFields as! NSMutableDictionary
+        tmpHeaders.setValue(requestContentLength, forKeyPath: "Content-Length")
+        http_tracker.allRequestHeaderFields = tmpHeaders as? [AnyHashable : Any]
+    }
+    
+    @objc public func withResponseHeaderFields(tracker: Any, responseHeaders: NSDictionary) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        http_tracker.allHeaderFields = responseHeaders as? [AnyHashable : Any]
+    }
+    
+    @objc public func withRequestHeaderFields(tracker: Any, requestHeaders: NSDictionary) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        http_tracker.allRequestHeaderFields = requestHeaders as? [AnyHashable : Any]
+    }
+    
+    @objc public func withInstrumentationSource(tracker: Any, informationSource: String) {
+        //may need to just move these to being tracked and stored as instance vars
+        //so we just return a key/guid and skip serialization
+        let http_tracker = tracker as! ADEumHTTPRequestTracker
+        http_tracker.instrumentationSource = informationSource
+    }
+    
     /*
-     - (void)beginHttpRequest:(CDVInvokedUrlCommand*)command {
+     - (void)withInstrumentationSource:(CDVInvokedUrlCommand*)command {
          CDVPluginResult *result;
          @try {
-             if ([command.arguments count] != 1) {
+             if ([command.arguments count] != 2) {
                  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-                 NSLog(@"Obj-C beginHttpRequest called -- bad command");
+                 NSLog(@"Obj-C withInstrumentationSource called -- bad command");
              } else {
-                 NSString *url = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
-                 NSLog(@"beginHttpRequest %@", url);
+                 NSString *key = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
+                 NSString *informationSource = [command argumentAtIndex:1 withDefault:nil andClass:[NSString class]];
+                 NSLog(@"key:%@ withInstrumentationSource:%@", key, informationSource);
 
-                 // get UUID for key
-                 NSString *key = [self generateKey];
-                 NSURL *nsurl = [[NSURL alloc] initWithString:url]; // new url from string
-
-                 if ([url length] > 0 && nsurl != nil) {
-                     ADEumHTTPRequestTracker *tracker = [ADEumHTTPRequestTracker requestTrackerWithURL:nsurl];
-                     self.keymap[key] = tracker;
-                     result = [self finalizeSuccessfulResult:key];
-                 } else {
-                     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR  messageAsString:@"Missing or invalid URL"];
+                 if ([key length] > 0) {
+                     if (informationSource) {
+                         ADEumHTTPRequestTracker *tracker = [self.keymap objectForKey:key];
+                         tracker.instrumentationSource = informationSource;
+                         result = [self finalizeSuccessfulResult:key];
+                     } else {
+                         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"InformationSource missing or invalid"];
+                     }
                  }
              }
          } @catch (NSException *exception) {
