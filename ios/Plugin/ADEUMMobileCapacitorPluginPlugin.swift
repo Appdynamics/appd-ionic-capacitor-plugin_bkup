@@ -77,13 +77,15 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
             return
         }
         call.resolve([
-            "call_tracker": implementation.beginCall(className: className!, methodName: methodName!, withArguments: withArguments) as Any
+            "call_tracker": implementation.beginCall(className: className!, methodName: methodName!, withArguments: withArguments) as String
         ])
         return
     }
     @objc func endCall(_ call: CAPPluginCall) {
-        let tracker = call.getObject("call_tracker") as Any
-        implementation.endCall(tracker: tracker)
+        let tracker = call.getString("call_tracker")
+        if tracker != nil {
+            implementation.endCall(tracker_key: tracker!)
+        }
         call.resolve()
     }
     @objc func beginHttpRequest(_ call: CAPPluginCall) {
@@ -101,50 +103,73 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         return
     }
     @objc func reportDone(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
-        implementation.reportDone(tracker: http_tracker)
+        let tracker = call.getString("http_tracker")
+        if tracker != nil {
+            implementation.reportDone(tracker_key: tracker!)
+        }
         call.resolve()
     }
     
     @objc func withResponseCode(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let statusCode = NSNumber.init(nonretainedObject: call.getInt("status_code"))
-        implementation.withResponseCode(tracker: http_tracker, statusCode: statusCode)
+        if tracker != nil {
+            implementation.withResponseCode(tracker_key: tracker!, statusCode: statusCode)
+        }
         call.resolve()
     }
     
     @objc func withResponseContentLength(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let content_length = NSNumber.init(nonretainedObject: call.getInt("content_length"))
-        implementation.withResponseContentLength(tracker: http_tracker, responseContentLength: content_length)
+        if tracker != nil {
+            implementation.withResponseContentLength(tracker_key: tracker!, responseContentLength: content_length)
+        }
         call.resolve()
     }
     
     @objc func withRequestContentLength(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let content_length = NSNumber.init(nonretainedObject: call.getInt("content_length"))
-        implementation.withRequestContentLength(tracker: http_tracker, requestContentLength: content_length)
+        if tracker != nil {
+            implementation.withRequestContentLength(tracker_key: tracker!, requestContentLength: content_length)
+        }
         call.resolve()
     }
     
     @objc func withResponseHeaderFields(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let headers = call.getObject("http_headers")! as NSDictionary
-        implementation.withResponseHeaderFields(tracker: http_tracker, responseHeaders: headers)
+        if tracker != nil {
+            implementation.withResponseHeaderFields(tracker_key: tracker!, responseHeaders: headers)
+        }
         call.resolve()
     }
     
     @objc func withRequestHeaderFields(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let headers = call.getObject("http_headers")! as NSDictionary
-        implementation.withRequestHeaderFields(tracker: http_tracker, requestHeaders: headers)
+        if tracker != nil {
+            implementation.withRequestHeaderFields(tracker_key: tracker!, requestHeaders: headers)
+        }
         call.resolve()
     }
     
     @objc func withInstrumentationSource(_ call: CAPPluginCall) {
-        let http_tracker = call.getObject("http_tracker") as Any
+        let tracker = call.getString("http_tracker")
         let source = call.getString("information_source") ?? ""
-        implementation.withInstrumentationSource(tracker: http_tracker, informationSource: source)
+        if tracker != nil {
+            implementation.withInstrumentationSource(tracker_key: tracker!, informationSource: source)
+        }
+        call.resolve()
+    }
+    
+    @objc func withErrorMessage(_ call: CAPPluginCall) {
+        let tracker = call.getString("http_tracker")
+        let error_message = call.getString("error_message") ?? ""
+        if tracker != nil {
+            implementation.withErrorMessage(tracker_key: tracker!, errorMessage: error_message)
+        }
         call.resolve()
     }
     
@@ -155,6 +180,69 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         ])
         return
     }
+    
+    @objc func startNextSession(_ call: CAPPluginCall) {
+        implementation.startNextSession()
+        call.resolve()
+    }
+    
+    @objc func unblockScreenshots(_ call: CAPPluginCall) {
+        implementation.unblockScreenshots()
+        call.resolve()
+    }
+    
+    @objc func blockScreenshots(_ call: CAPPluginCall) {
+        implementation.blockScreenshots()
+        call.resolve()
+    }
+    
+    @objc func screenshotsBlocked(_ call: CAPPluginCall) {
+        let is_blocked = implementation.screenshotsBlocked()
+        call.resolve([
+            "screenshots_blocked": is_blocked
+        ])
+        return
+    }
+    
+    @objc func startSessionFrame(_ call: CAPPluginCall) {
+        let sessionFrameName = call.getString("session_frame_name") ?? nil
+        if sessionFrameName == nil {
+            //do nothing and return nothing
+            call.resolve()
+            return
+        }
+        let session = implementation.startSessionFrame(sessionFrameName: sessionFrameName!)
+        call.resolve([
+            "session_frame": session
+        ])
+        return
+    }
+    
+    @objc func endSessionFrame(_ call: CAPPluginCall) {
+        let tracker = call.getString("session_frame")
+        if tracker != nil {
+            implementation.endSessionFrame(session_key: tracker!)
+        }
+        call.resolve()
+    }
+    
+    @objc func updateSessionFrameName(_ call: CAPPluginCall) {
+        let sessionFrameName = call.getString("session_frame_name") ?? nil
+        let tracker = call.getString("session_frame")
+        if sessionFrameName == nil || tracker == nil{
+            //do nothing and return nothing
+            call.resolve()
+            return
+        }
+        //if here we should have vals for both and can force unwrap
+        implementation.updateSessionFrameName(session_key: tracker!, session_name: sessionFrameName!)
+        call.resolve([
+            "session_frame": tracker!
+        ])
+        return
+        
+    }
+    
     override public func load() {
         if let appKey = getConfigValue("ADEUM_APP_KEY") as? String{
             config.appKey = appKey

@@ -3,6 +3,13 @@ import ADEUMInstrumentation
 import Capacitor
 
 @objc public class ADEUMMobileCapacitorPlugin: NSObject {
+    
+    var reference_map = [String:Any]()
+    
+    @objc public func generateKey() -> String {
+        return UUID().uuidString
+    }
+    
     @objc public func echo(_ value: String) -> String {
         print(value)
         return value
@@ -38,11 +45,15 @@ import Capacitor
         return ADEumInstrumentation.beginCall(receiver, selector: selector, withArguments: withArguments)
         
     }*/
-    @objc public func beginCall(className: String, methodName: String, withArguments: [Any]) -> Any? {
-        return ADEumInstrumentation.beginCall(className, methodName: methodName, withArguments: withArguments)
+    @objc public func beginCall(className: String, methodName: String, withArguments: [Any]) -> String {
+        let call = ADEumInstrumentation.beginCall(className, methodName: methodName, withArguments: withArguments)
+        let key = self.generateKey()
+        reference_map[key] = call
+        return key
     }
     
-    @objc public func endCall(tracker: Any) -> Void {
+    @objc public func endCall(tracker_key: String) -> Void {
+        let tracker = reference_map[tracker_key]
         ADEumInstrumentation.endCall(tracker)
     }
     
@@ -51,86 +62,126 @@ import Capacitor
         return headers
     }
     
-    @objc public func beginHttpRequest(url: URL) -> ADEumHTTPRequestTracker{
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        return ADEumHTTPRequestTracker.init(url: url)
+    @objc public func beginHttpRequest(url: URL) -> String {
+        
+        let http_tracker = ADEumHTTPRequestTracker.init(url: url)
+        let key = self.generateKey()
+        reference_map[key] = http_tracker
+        return key
     }
     
-    @objc public func reportDone(tracker: Any){
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        return http_tracker.reportDone()
+    @objc public func reportDone(tracker_key: String) -> Void {
+        
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        tracker?.reportDone()
+        reference_map.removeValue(forKey: tracker_key)
     }
     
     
-    @objc public func withResponseCode(tracker: Any, statusCode: NSNumber) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        http_tracker.statusCode = statusCode
+    @objc public func withResponseCode(tracker_key: String, statusCode: NSNumber) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        //let http_tracker = tracker as! ADEumHTTPRequestTracker
+        tracker?.statusCode = statusCode
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
     }
     
-    @objc public func withResponseContentLength(tracker: Any, responseContentLength: NSNumber) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        let tmpHeaders = http_tracker.allHeaderFields as! NSMutableDictionary
+    @objc public func withResponseContentLength(tracker_key: String, responseContentLength: NSNumber) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        let tmpHeaders = tracker?.allHeaderFields as! NSMutableDictionary
         tmpHeaders.setValue(responseContentLength, forKeyPath: "Content-Length")
-        http_tracker.allHeaderFields = tmpHeaders as? [AnyHashable : Any]
+        tracker?.allHeaderFields = tmpHeaders as? [AnyHashable : Any]
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
     }
     
-    @objc public func withRequestContentLength(tracker: Any, requestContentLength: NSNumber) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        let tmpHeaders = http_tracker.allRequestHeaderFields as! NSMutableDictionary
+    @objc public func withRequestContentLength(tracker_key: String, requestContentLength: NSNumber) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        let tmpHeaders = tracker?.allRequestHeaderFields as! NSMutableDictionary
         tmpHeaders.setValue(requestContentLength, forKeyPath: "Content-Length")
-        http_tracker.allRequestHeaderFields = tmpHeaders as? [AnyHashable : Any]
+        tracker?.allRequestHeaderFields = tmpHeaders as? [AnyHashable : Any]
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
     }
     
-    @objc public func withResponseHeaderFields(tracker: Any, responseHeaders: NSDictionary) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        http_tracker.allHeaderFields = responseHeaders as? [AnyHashable : Any]
+    @objc public func withResponseHeaderFields(tracker_key: String, responseHeaders: NSDictionary) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        tracker?.allHeaderFields = responseHeaders as? [AnyHashable : Any]
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
     }
     
-    @objc public func withRequestHeaderFields(tracker: Any, requestHeaders: NSDictionary) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        http_tracker.allRequestHeaderFields = requestHeaders as? [AnyHashable : Any]
+    @objc public func withRequestHeaderFields(tracker_key: String, requestHeaders: NSDictionary) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        tracker?.allRequestHeaderFields = requestHeaders as? [AnyHashable : Any]
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
     }
     
-    @objc public func withInstrumentationSource(tracker: Any, informationSource: String) {
-        //may need to just move these to being tracked and stored as instance vars
-        //so we just return a key/guid and skip serialization
-        let http_tracker = tracker as! ADEumHTTPRequestTracker
-        http_tracker.instrumentationSource = informationSource
+    @objc public func withInstrumentationSource(tracker_key: String, informationSource: String) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        tracker?.instrumentationSource = informationSource
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
+    }
+    
+    @objc public func withErrorMessage(tracker_key: String, errorMessage: String) {
+        let tracker = reference_map[tracker_key] as? ADEumHTTPRequestTracker
+        let http_error = NSError(domain: "com.appdynamics.ionic", code: -100, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+        tracker?.error = http_error
+        reference_map.updateValue(tracker as Any, forKey: tracker_key)
+    }
+    
+    @objc public func startNextSession() -> Void {
+        ADEumInstrumentation.startNextSession()
+    }
+    
+    @objc public func unblockScreenshots() -> Void {
+        ADEumInstrumentation.unblockScreenshots()
+    }
+    
+    @objc public func blockScreenshots() -> Void {
+        ADEumInstrumentation.blockScreenshots()
+    }
+    
+    @objc public func screenshotsBlocked() -> Bool {
+        return ADEumInstrumentation.screenshotsBlocked()
+    }
+    
+    @objc public func startSessionFrame(sessionFrameName: String) -> String {
+        let session = ADEumInstrumentation.startSessionFrame(sessionFrameName)
+        let key = self.generateKey()
+        reference_map[key] = session
+        return key
+    }
+    
+    @objc public func endSessionFrame(session_key: String) -> Void {
+        let session = reference_map[session_key] as? ADEumSessionFrame
+        session?.end()
+        reference_map.removeValue(forKey: session_key)
+    }
+    
+    @objc public func updateSessionFrameName(session_key: String, session_name: String) -> Void {
+        let session = reference_map[session_key] as? ADEumSessionFrame
+        session?.updateName(session_name)
+        reference_map.updateValue(session as Any, forKey: session_key)
     }
     
     /*
-     - (void)withInstrumentationSource:(CDVInvokedUrlCommand*)command {
+     - (void)updateSessionFrameName:(CDVInvokedUrlCommand*)command {
          CDVPluginResult *result;
          @try {
-             if ([command.arguments count] != 2) {
+             if ([command.arguments count] < 2) {
                  [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-                 NSLog(@"Obj-C withInstrumentationSource called -- bad command");
-             } else {
+                 NSLog(@"Obj-C updateSessionFrameName called -- bad command");
+             } else if ([command.arguments count] >= 2) {
                  NSString *key = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
-                 NSString *informationSource = [command argumentAtIndex:1 withDefault:nil andClass:[NSString class]];
-                 NSLog(@"key:%@ withInstrumentationSource:%@", key, informationSource);
-
-                 if ([key length] > 0) {
-                     if (informationSource) {
-                         ADEumHTTPRequestTracker *tracker = [self.keymap objectForKey:key];
-                         tracker.instrumentationSource = informationSource;
-                         result = [self finalizeSuccessfulResult:key];
+                 NSString *sessionFrameName = [command argumentAtIndex:1 withDefault:nil andClass:[NSString class]];
+                 if ([key length] > 0 && [sessionFrameName length] > 0) {
+                     ADEumSessionFrame *sessionFrame = [self.keymap objectForKey:key];
+                     if (sessionFrame != nil) {
+                         [sessionFrame updateName:sessionFrameName];
+                         NSLog(@"updateSessionFrameName %@, %@", key, sessionFrameName);
+                         result = [self finalizeSuccessfulResult:nil];
                      } else {
-                         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"InformationSource missing or invalid"];
+                         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"SessionFrame not found"];
                      }
+                 } else {
+                     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid SessionFrame object"];
                  }
              }
          } @catch (NSException *exception) {
