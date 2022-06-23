@@ -28,8 +28,8 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void onReset(PluginCall call) {
-        implementation.onReset();
+    public void clear(PluginCall call) {
+        implementation.clear();
     }
 
     @PluginMethod

@@ -139,7 +139,7 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
     
     @objc func withResponseHeaderFields(_ call: CAPPluginCall) {
         let tracker = call.getString("http_tracker")
-        let headers = call.getObject("http_headers")! as NSDictionary
+        let headers = call.dictionaryWithValues(forKeys: ["http_headers"]) as NSDictionary
         if tracker != nil {
             implementation.withResponseHeaderFields(tracker_key: tracker!, responseHeaders: headers)
         }
@@ -148,7 +148,7 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
     
     @objc func withRequestHeaderFields(_ call: CAPPluginCall) {
         let tracker = call.getString("http_tracker")
-        let headers = call.getObject("http_headers")! as NSDictionary
+        let headers = call.dictionaryWithValues(forKeys: ["http_headers"]) as NSDictionary
         if tracker != nil {
             implementation.withRequestHeaderFields(tracker_key: tracker!, requestHeaders: headers)
         }
@@ -176,7 +176,7 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
     @objc func getCorrelationHeaders(_ call: CAPPluginCall) {
         let headers = implementation.getCorrelationHeaders()
         call.resolve([
-            "headers": headers
+            "headers": headers //NSDictionary
         ])
         return
     }
@@ -241,6 +241,12 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         ])
         return
         
+    }
+    
+    @objc func clear(_ call: CAPPluginCall) {
+        implementation.clear()
+        call.resolve()
+        return
     }
     
     override public func load() {

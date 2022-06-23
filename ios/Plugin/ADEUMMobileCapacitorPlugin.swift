@@ -161,6 +161,10 @@ import Capacitor
         reference_map.updateValue(session as Any, forKey: session_key)
     }
     
+    @objc public func clear() -> Void {
+        reference_map.removeAll()
+    }
+    
     /*
      - (void)updateSessionFrameName:(CDVInvokedUrlCommand*)command {
          CDVPluginResult *result;

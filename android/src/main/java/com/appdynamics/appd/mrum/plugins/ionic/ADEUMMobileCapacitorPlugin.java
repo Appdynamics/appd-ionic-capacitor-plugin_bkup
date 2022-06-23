@@ -199,7 +199,7 @@ public class ADEUMMobileCapacitorPlugin {
         return false;
     }
 
-    public void onReset() {
+    public void clear() {
       if (callTrackers != null)
          callTrackers.clear();
       if (httpRequestTrackers != null)
