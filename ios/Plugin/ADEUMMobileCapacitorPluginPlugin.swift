@@ -272,6 +272,6 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
             //let d = ADEumInteractionCaptureMode.ADEumInteractionCaptureModeNone
             config.interactionCaptureMode = ADEumInteractionCaptureMode.init(rawValue: captureMode)
         }
-        implementation.pluginInitialize(config: <#T##ADEumAgentConfiguration#>)
+        implementation.pluginInitialize(config: config)
     }
 }
