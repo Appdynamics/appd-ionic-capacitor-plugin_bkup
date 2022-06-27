@@ -18,6 +18,7 @@ CAP_PLUGIN(ADEUMMobileCapacitorPluginPlugin, "ADEUMMobileCapacitorPlugin",
            CAP_PLUGIN_METHOD(removeUserData, CAPPluginReturnNone);
            CAP_PLUGIN_METHOD(takeScreenshot, CAPPluginReturnNone);
            CAP_PLUGIN_METHOD(beginCall, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(startSessionFrame, CAPPluginReturnPromise);
             //we don't declare load but if this doesn't auto init agent we may need to make our init it's own
             //method and then declare it
            //CAP_PLUGIN_METHOD(load, CAPPluginReturnPromise);
