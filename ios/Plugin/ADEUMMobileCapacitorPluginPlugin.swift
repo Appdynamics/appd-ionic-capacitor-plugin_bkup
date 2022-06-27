@@ -243,6 +243,13 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         
     }
     
+    @objc func getVersion(_ call: CAPPluginCall) {
+        call.resolve([
+            "version": implementation.getVersion()
+        ])
+        return
+    }
+    
     @objc func clear(_ call: CAPPluginCall) {
         implementation.clear()
         call.resolve()

@@ -161,6 +161,12 @@ import Capacitor
         reference_map.updateValue(session as Any, forKey: session_key)
     }
     
+    @objc public func getVersion() -> String {
+        var version = "1.0.0"
+        version = String(ADEumInstrumentation.version())
+        return version
+    }
+    
     @objc public func clear() -> Void {
         reference_map.removeAll()
     }
