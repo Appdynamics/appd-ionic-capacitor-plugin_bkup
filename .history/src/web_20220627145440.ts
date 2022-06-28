@@ -5,9 +5,6 @@ import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 export class ADEUMMobileCapacitorPluginWeb
   extends WebPlugin
   implements ADEUMMobileCapacitorPluginPlugin {
-  constructor() {
-    super();
-  }
   async echo(options: { value: string }): Promise<{ value: string }> {
     console.log('ECHO', options);
     return options;
@@ -50,7 +47,7 @@ export class ADEUMMobileCapacitorPluginWeb
     withArguments: [];
   }): Promise<{ call_tracker: string }> {
     console.log('beginCall', options);
-    return { call_tracker: 'call_tracker_guid' };
+    return { call_tracker: 'string' };
   }
   async endCall(options: { call_tracker: string }): Promise<void> {
     console.log('endCall', options);
@@ -60,7 +57,7 @@ export class ADEUMMobileCapacitorPluginWeb
     url: string;
   }): Promise<{ http_tracker: string }> {
     console.log('beginHttpRequest', options);
-    return { http_tracker: 'http_tracker_guid' };
+    return { http_tracker: 'string' };
   }
   async reportDone(options: { http_tracker: string }): Promise<void> {
     console.log('reportDone', options);
@@ -138,9 +135,8 @@ export class ADEUMMobileCapacitorPluginWeb
   async startSessionFrame(options: {
     session_frame_name: string;
   }): Promise<{ session_frame: string }> {
-    console.log('should be running');
     console.log('startSessionFrame', options);
-    return { session_frame: 'session_frame_guid' };
+    return { session_frame: options.session_frame_name };
   }
   async endSessionFrame(options: { session_frame: string }): Promise<void> {
     console.log('endSessionFrame', options);
@@ -151,7 +147,7 @@ export class ADEUMMobileCapacitorPluginWeb
     session_frame: string;
   }): Promise<{ session_frame: string }> {
     console.log('updateSessionFrameName', options);
-    return { session_frame: options.session_frame };
+    return { session_frame: options. };
   }
   async getVersion(): Promise<{ version: string }> {
     console.log('getVersion: 1.1.1');

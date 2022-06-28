@@ -5,9 +5,6 @@ import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 export class ADEUMMobileCapacitorPluginWeb
   extends WebPlugin
   implements ADEUMMobileCapacitorPluginPlugin {
-  constructor() {
-    super();
-  }
   async echo(options: { value: string }): Promise<{ value: string }> {
     console.log('ECHO', options);
     return options;
@@ -138,7 +135,6 @@ export class ADEUMMobileCapacitorPluginWeb
   async startSessionFrame(options: {
     session_frame_name: string;
   }): Promise<{ session_frame: string }> {
-    console.log('should be running');
     console.log('startSessionFrame', options);
     return { session_frame: 'session_frame_guid' };
   }

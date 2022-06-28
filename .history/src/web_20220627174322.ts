@@ -5,9 +5,8 @@ import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 export class ADEUMMobileCapacitorPluginWeb
   extends WebPlugin
   implements ADEUMMobileCapacitorPluginPlugin {
-  constructor() {
-    super();
-  }
+    constructor() {
+      super();}
   async echo(options: { value: string }): Promise<{ value: string }> {
     console.log('ECHO', options);
     return options;
