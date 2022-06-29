@@ -92,112 +92,7 @@ public class ADEUMMobileCapacitorPlugin {
         }
     }
 
-    @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (!checkPluginInitialized(callbackContext))
-           return false;
-        // this try will ensure the host app never crashes if there's an error in execution
-        // of the plugin or the native agent
-        try {
-           if ("getVersion".equals(action)) {
-               this.getVersion( callbackContext);
-               return true;
-           } else if ("initWithConfiguration".equals(action)) {
-               JSONObject map = args.getJSONObject(0);
-               this.initWithConfiguration( args, callbackContext);
-               return true;
-           } else if ("changeAppKey".equals(action)) {
-               this.changeAppKey( args, callbackContext);
-               return true;
-           } else if ("startTimerWithName".equals(action)) {
-               this.startTimerWithName( args, callbackContext);
-               return true;
-           } else if ("stopTimerWithName".equals(action)) {
-               this.stopTimerWithName( args, callbackContext);
-               return true;
-           } else if ("reportMetricWithName".equals(action)) {
-               this.reportMetricWithName( args, callbackContext);
-               return true;
-           } else if ("leaveBreadcrumb".equals(action)) {
-               this.leaveBreadcrumb( args, callbackContext);
-               return true;
-           } else if ("setUserData".equals(action)) {
-               this.setUserData( args, callbackContext);
-               return true;
-           } else if ("removeUserData".equals(action)) {
-               this.removeUserData( args, callbackContext);
-               return true;
-           } else if ("takeScreenshot".equals(action)) {
-               this.takeScreenshot( args, callbackContext);
-               return true;
-           } else if ("beginCall".equals(action)) {
-               this.beginCall( args, callbackContext);
-               return true;
-           } else if ("endCall".equals(action)) {
-               this.endCall( args, callbackContext);
-               return true;
-           } else if ("beginHttpRequest".equals(action)) {
-               this.beginHttpRequest( args, callbackContext);
-               return true;
-           } else if ("withURL".equals(action)) {
-               this.withURL( args, callbackContext);
-               return true;
-           } else if ("withResponseCode".equals(action)) {
-               this.withResponseCode( args, callbackContext);
-               return true;
-           } else if ("withResponseContentLength".equals(action)) {
-               this.withResponseContentLength( args, callbackContext);
-               return true;
-           } else if ("withRequestContentLength".equals(action)) {
-               this.withRequestContentLength( args, callbackContext);
-               return true;
-           } else if ("withErrorMessage".equals(action)) {
-               this.withErrorMessage( args, callbackContext);
-               return true;
-           } else if ("withRequestHeaderFields".equals(action)) {
-               this.withRequestHeaderFields( args, callbackContext);
-               return true;
-           } else if ("withResponseHeaderFields".equals(action)) {
-               this.withResponseHeaderFields( args, callbackContext);
-               return true;
-           } else if ("withInstrumentationSource".equals(action)) {
-               this.withInstrumentationSource( args, callbackContext);
-               return true;
-           } else if ("reportDone".equals(action)) {
-               this.reportDone( args, callbackContext);
-               return true;
-           } else if ("crash".equals(action)) {
-               this.crash( args, callbackContext);
-               return true;
-           } else if ("flush".equals(action)) {
-               this.flush( args, callbackContext);
-               return true;
-           } else if ("startNextSession".equals(action)) {
-               this.startNextSession( args, callbackContext);
-               return true;
-           } else if ("unblockScreenshots".equals(action)) {
-               this.unblockScreenshots( args, callbackContext);
-               return true;
-           } else if ("blockScreenshots".equals(action)) {
-               this.blockScreenshots( args, callbackContext);
-               return true;
-           } else if ("screenshotsBlocked".equals(action)) {
-               this.screenshotsBlocked( args, callbackContext);
-               return true;
-           } else if ("startSessionFrame".equals(action)) {
-               this.startSessionFrame( args, callbackContext);
-               return true;
-           } else if ("updateSessionFrameName".equals(action)) {
-               this.updateSessionFrameName( args, callbackContext);
-               return true;
-           } else if ("endSessionFrame".equals(action)) {
-               this.endSessionFrame( args, callbackContext);
-               return true;
-           }
-        } catch (Exception ex) { callbackContext.error(ex.getMessage()); }
 
-        return false;
-    }
 
     public void clear() {
       if (callTrackers != null)
@@ -256,9 +151,9 @@ public class ADEUMMobileCapacitorPlugin {
         callbackContext.success(VERSION);
     }
 
-    private void startTimerWithName(JSONArray args, CallbackContext callbackContext)  throws JSONException {
-        Instrumentation.startTimer(args.getString(0));
-        callbackContext.success(VERSION);
+    private void startTimer(String name){
+        Instrumentation.startTimer(name);
+        return;
     }
 
     private void stopTimerWithName(JSONArray args, CallbackContext callbackContext) throws JSONException {

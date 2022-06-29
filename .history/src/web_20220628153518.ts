@@ -40,7 +40,7 @@ export class ADEUMMobileCapacitorPluginWeb
     console.log('removeUserData', options);
     return;
   }
-
+  
   async beginCall(options: {
     className: string;
     methodName: string;
@@ -131,10 +131,6 @@ export class ADEUMMobileCapacitorPluginWeb
   async screenshotsBlocked(): Promise<{ screenshots_blocked: boolean }> {
     console.log('screenshotsBlocked');
     return { screenshots_blocked: false };
-  }
-  async takeScreenshot(): Promise<void> {
-    console.log('takeScreenshot');
-    return;
   }
   async startSessionFrame(options: {
     session_frame_name: string;

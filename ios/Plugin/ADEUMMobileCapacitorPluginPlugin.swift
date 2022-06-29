@@ -62,7 +62,7 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
         implementation.removeUserData(key: key!)
         call.resolve()
     }
-    @objc func takeScreenShot(_ call: CAPPluginCall) {
+    @objc func takeScreenshot(_ call: CAPPluginCall) {
         implementation.takeScreenshot()
         call.resolve()
     }

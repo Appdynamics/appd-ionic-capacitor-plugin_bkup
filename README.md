@@ -20,7 +20,6 @@ npx cap sync
 * [`leaveBreadcrumb(...)`](#leavebreadcrumb)
 * [`setUserData(...)`](#setuserdata)
 * [`removeUserData(...)`](#removeuserdata)
-* [`takeScreenshot()`](#takescreenshot)
 * [`beginCall(...)`](#begincall)
 * [`endCall(...)`](#endcall)
 * [`beginHttpRequest(...)`](#beginhttprequest)
@@ -37,6 +36,7 @@ npx cap sync
 * [`unblockScreenshots()`](#unblockscreenshots)
 * [`blockScreenshots()`](#blockscreenshots)
 * [`screenshotsBlocked()`](#screenshotsblocked)
+* [`takeScreenshot()`](#takescreenshot)
 * [`startSessionFrame(...)`](#startsessionframe)
 * [`endSessionFrame(...)`](#endsessionframe)
 * [`updateSessionFrameName(...)`](#updatesessionframename)
@@ -138,15 +138,6 @@ removeUserData(options: { key: string; }) => void
 | Param         | Type                          |
 | ------------- | ----------------------------- |
 | **`options`** | <code>{ key: string; }</code> |
-
---------------------
-
-
-### takeScreenshot()
-
-```typescript
-takeScreenshot() => void
-```
 
 --------------------
 
@@ -343,6 +334,15 @@ screenshotsBlocked() => Promise<{ screenshots_blocked: boolean; }>
 ```
 
 **Returns:** <code>Promise&lt;{ screenshots_blocked: boolean; }&gt;</code>
+
+--------------------
+
+
+### takeScreenshot()
+
+```typescript
+takeScreenshot() => void
+```
 
 --------------------
 

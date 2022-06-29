@@ -20,6 +20,12 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         call.resolve(ret);
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void startTimer(PluginCall call) {
+        String name = call.getString("name");
+        call.resolve();
+    }
+
     @PluginMethod
     public void getVersion(PluginCall call) {
         JSObject ret = new JSObject();
@@ -48,11 +54,6 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         }
     }
 
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void flush(PluginCall call) {
-        implementation.flush();
-        
-    }
 
     @PluginMethod
     public void crash(PluginCall call) {

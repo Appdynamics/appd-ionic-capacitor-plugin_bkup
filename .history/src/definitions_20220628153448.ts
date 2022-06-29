@@ -7,6 +7,7 @@ export interface ADEUMMobileCapacitorPluginPlugin {
   leaveBreadcrumb(options: { name: string }): void; //ios
   setUserData(options: { key: string; value: string }): void; //ios
   removeUserData(options: { key: string }): void; //ios
+  
   beginCall(options: {
     className: string;
     methodName: string;
@@ -48,7 +49,6 @@ export interface ADEUMMobileCapacitorPluginPlugin {
   unblockScreenshots(): void; //ios
   blockScreenshots(): void; //ios
   screenshotsBlocked(): Promise<{ screenshots_blocked: boolean }>; //ios
-  takeScreenshot(): void; //ios
   startSessionFrame(options: {
     session_frame_name: string;
   }): Promise<{ session_frame: string }>; //ios

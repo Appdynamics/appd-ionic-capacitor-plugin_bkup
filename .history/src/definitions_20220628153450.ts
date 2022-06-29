@@ -48,7 +48,6 @@ export interface ADEUMMobileCapacitorPluginPlugin {
   unblockScreenshots(): void; //ios
   blockScreenshots(): void; //ios
   screenshotsBlocked(): Promise<{ screenshots_blocked: boolean }>; //ios
-  takeScreenshot(): void; //ios
   startSessionFrame(options: {
     session_frame_name: string;
   }): Promise<{ session_frame: string }>; //ios
