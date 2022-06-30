@@ -27,6 +27,7 @@ import Capacitor
         ADEumInstrumentation.reportMetric(withName: name, value: value)
     }
     @objc public func leaveBreadcrumb(name: String?) -> Void {
+        debugPrint(name as Any)
         ADEumInstrumentation.leaveBreadcrumb(name)
     }
     @objc public func setUserData(key: String, value: String) -> Void {
@@ -36,7 +37,7 @@ import Capacitor
         ADEumInstrumentation.removeUserData(key)
     }
     @objc public func takeScreenshot() -> Void {
-        ADEumInstrumentation.takeScreenshot()
+        debugPrint(ADEumInstrumentation.takeScreenshot())
     }
     /*
      * For the plugin I do not think any ios centric beginCall makes sense
