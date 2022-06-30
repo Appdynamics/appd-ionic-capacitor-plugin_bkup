@@ -1,6 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
 import { v4 as uuid } from 'uuid';
-
 import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 
 export class ADEUMMobileCapacitorPluginWeb
@@ -142,7 +141,7 @@ export class ADEUMMobileCapacitorPluginWeb
   }): Promise<{ session_frame: string }> {
     console.log('should be running');
     console.log('startSessionFrame', options);
-    return { session_frame: uuid() };
+    return { session_frame: 'session_frame_guid' };
   }
   async endSessionFrame(options: { session_frame: string }): Promise<void> {
     console.log('endSessionFrame', options);
