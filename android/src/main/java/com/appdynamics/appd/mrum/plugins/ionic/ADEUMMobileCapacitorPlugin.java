@@ -31,6 +31,7 @@ public class ADEUMMobileCapacitorPlugin extends Plugin {
     public void startTimerWithName(PluginCall call) {
         String name = call.getString("name");
         Log.d(TAG, " startTimerWithName: " + name);
+        implementation.startTimeWithName(name);
         call.resolve();
     }
 
@@ -122,8 +123,8 @@ public class ADEUMMobileCapacitorPlugin extends Plugin {
         url = url.replaceAll("\\s","").length()==0 ? "" : url;
         Log.d(TAG, " beginHTTPRequest: " + url);
         if (url.length() > 0){
-            JSObject http_tracker = implementation.beginHttpRequest(url);
-            call.resolve(http_tracker);
+            JSObject jsobject = implementation.beginHttpRequest(url);
+            call.resolve(jsobject);
         }else{
             call.resolve();
         }
@@ -140,7 +141,7 @@ public class ADEUMMobileCapacitorPlugin extends Plugin {
         tracker = tracker.replaceAll("\\s","").length()==0 ? "" : tracker;
         Log.d(TAG, " reportDone: " + tracker);
         if (tracker.length() > 0){
-            implementation.reportDone();
+            implementation.reportDone(tracker);
         }
         call.resolve();
     }
@@ -193,7 +194,7 @@ public class ADEUMMobileCapacitorPlugin extends Plugin {
         String tracker = call.getString("http_tracker");
         JSObject httpHeaders =  call.getObject("http_headers");
         if (tracker.replaceAll("\\s","").length() > 0){
-            implementation.withResponseHeaderFields(tracker, httpHeaders);
+            implementation.withRequestHeaderFields(tracker, httpHeaders);
         }
         call.resolve();
     }

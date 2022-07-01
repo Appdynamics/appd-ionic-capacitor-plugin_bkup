@@ -1,5 +1,6 @@
 package com.appdynamics.appd.mrum.plugins.ionic;
 
+import android.app.Instrumentation;
 import android.util.Log;
 import com.appdynamics.eumagent.runtime.Instrumentation;
 import com.appdynamics.eumagent.runtime.InstrumentationCallbacks;
@@ -7,12 +8,16 @@ import com.appdynamics.eumagent.runtime.AgentConfiguration;
 import com.appdynamics.eumagent.runtime.CallTracker;
 import com.appdynamics.eumagent.runtime.HttpRequestTracker;
 import com.appdynamics.eumagent.runtime.SessionFrame;
+import com.appdynamics.eumagent.runtime.ServerCorrelationHeaders;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import android.webkit.WebView;
 public class ADEUMMobileCapacitorPluginImpl {
     private final static String ADEumPluginType = "Ionic Capacitor";
     private final static String VERSION = "1.1.0";
+    private final static String TAG = "EUMCapacitorPlgImpl";
     private HashMap<String, CallTracker> callTrackers;
     private HashMap<String, HttpRequestTracker> httpRequestTrackers;
     private HashMap<String, SessionFrame> sessionFrames;
@@ -92,6 +98,7 @@ public class ADEUMMobileCapacitorPluginImpl {
             Instrumentation.startFromHybrid(config, ADEumPluginType, VERSION);
             pluginInitialized = true;
         } catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.getMessage());
             pluginInitialized = false;
         }
     }
@@ -177,72 +184,193 @@ public class ADEUMMobileCapacitorPluginImpl {
     }
     /* Custom method implementation starts here */
     public void stopTimerWithName(String name) {
-
+        Instrumentation.stopTimer(name);
     }
 
     public void reportMetricWithName(String name, Integer value) {
+        Instrumentation.reportMetric(name, value);
     }
 
     public void leaveBreadcrumb(String name) {
+        Instrumentation.leaveBreadcrumb(args.getString(0), Integer.parseInt(args.getString(1)));
     }
 
     public void setUserData(String key, String value) {
+        Instrumentation.setUserData(key, value);
     }
 
     public void removeUserData(String key) {
+        Instrumentation.removeUserData(key);
     }
 
     public void takeScreenshot() {
+        Instrumentation.takeScreenshot();
     }
 
-    public boolean beginCall(String className, String methodName, JSArray args) {
+    public String beginCall(String className, String methodName, JSArray args) {
+        CallTracker callTracker = Instrumentation.beginCall(className, methodName, args);
+        String uuid = UUID.randomUUID().toString();
+        callTrackers.put(uuid, callTracker);
+        return uuid;
     }
 
     public JSObject beginHttpRequest(String url) {
+        try {
+            HttpRequestTracker tracker = Instrumentation.beginHttpRequest(new URL(url);
+            String uuid = UUID.randomUUID().toString();
+            httpRequestTrackers.put(uuid, tracker);
+            JSObject jsObject = new JSObject();
+            jsObject.put("uuid", uuid);
+            return jsObject;
+        } catch (MalformedURLException me){
+            Log.e(TAG, me.getMessage());
+        }
     }
 
-    public void reportDone() {
+    public void reportDone(String trackerId) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.reportDone();
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
-    public void withResponseCode(String tracker, Integer statusCode) {
+    public void withResponseCode(String trackerId, Integer statusCode) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.withResponseCode(statusCode);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
-    public void withResponseContentLength(String tracker, Integer contentLength) {
+    public void withResponseContentLength(String trackerId, Integer contentLength) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.withResponseContentLength(contentLength);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
-    public void withRequestContentLength(String tracker, Integer contentLength) {
+    public void withRequestContentLength(String trackerId, Integer contentLength) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.withResponseContentLength(contentLength);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
-    public void withResponseHeaderFields(String tracker, JSObject httpHeaders) {
+    public void withResponseHeaderFields(String trackerId, JSObject httpHeaders) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            HashMap headersMap = new HashMap();
+            Iterator itor = httpHeaders.keys();
+            while (itor.hasNext()) {
+                String key = (String) itor.next();
+                String val = httpHeaders.getString(key);
+                ArrayList list = new ArrayList();
+                list.add(val);
+                // AppD magic headers must be uppercase CORE-39486
+                if (key.startsWith("adrum")) {
+                    key = key.toUpperCase();
+                }
+                headersMap.put(key, list);
+            }
+            tracker.withResponseHeaderFields(headersMap);
+        }catch(ClassCastException | NullPointerException e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
+        catch(Exception e){
+            Log.e(TAG, "Internal error occurred setting header fields");
+        }
     }
 
-    public void withErrorMessage(String tracker, String errorMessage) {
+    public void withRequestHeaderFields(String trackerId, JSObject httpHeaders) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            HashMap headersMap = new HashMap();
+            Iterator itor = httpHeaders.keys();
+            while (itor.hasNext()) {
+                String key = (String) itor.next();
+                String val = httpHeaders.getString(key);
+                ArrayList list = new ArrayList();
+                list.add(val);
+                // AppD magic headers must be uppercase CORE-39486
+                if (key.startsWith("adrum")) {
+                    key = key.toUpperCase();
+                }
+                headersMap.put(key, list);
+            }
+            tracker.withRequestHeaderFields(headersMap);
+        }catch(ClassCastException | NullPointerException e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
+        catch(Exception e){
+            Log.e(TAG, "Internal error occurred setting header fields");
+        }
     }
 
-    public boolean getCorrelationHeaders() {
+    public void withErrorMessage(String trackerId, String errorMessage) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.withError(errorMessage);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
+    }
+
+    public Map<String, List<String>> getCorrelationHeaders() {
+        Map<String, List<String>> correlationHeaders = ServerCorrelationHeaders.generate();
+        return correlationHeaders;
     }
 
     public void startNextSession() {
+        Instrumentation.startNextSession();
     }
 
     public void unblockScreenshots() {
+        Instrumentation.unblockScreenshots();
     }
 
     public void blockScreenshots() {
+        Instrumentation.blockScreenshots();
     }
 
     public Boolean screenshotsBlocked() {
+        return Instrumentation.screenshotsBlocked();
     }
 
-    public boolean startSessionFrame(String sessionFrameName) {
+    public String startSessionFrame(String sessionFrameName) {
+        SessionFrame sessionFrame = Instrumentation.startSessionFrame(sessionFrameName);
+        String uuid = UUID.randomUUID().toString();
+        sessionFrames.put(uuid, sessionFrame);
+        return uuid;
     }
 
-    public void endSessionFrame(String sessionFrame) {
+    public void endSessionFrame(String sessionFrameName) {
+        try{
+            SessionFrame sessionFrame = sessionFrames.get(sessionFrameName);
+            sessionFrame.end();
+            sessionFrames.remove(sessionFrameName);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
     public void updateSessionFrame(String tracker, String sessionFrameName) {
+
     }
 
-    public void endCall(JSObject callTracker) {
+    public void endCall(JSObject callTrackerId) {
+        CallTracker callTracker = callTrackers.get(callTrackerId);
+        callTracker.reportCallEnded();
+        callTrackers.remove(callTrackerId);
+    }
+
+    public void startTimeWithName(String name) {
+        Instrumentation.startTimer(name);
     }
 }
