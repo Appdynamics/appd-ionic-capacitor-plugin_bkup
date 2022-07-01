@@ -1,6 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
 import { v4 as uuid } from 'uuid';
-
 import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 
 export class ADEUMMobileCapacitorPluginWeb

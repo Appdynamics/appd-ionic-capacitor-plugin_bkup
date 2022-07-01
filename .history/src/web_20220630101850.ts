@@ -1,6 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
-import { v4 as uuid } from 'uuid';
-
+import { v4 }
 import type { ADEUMMobileCapacitorPluginPlugin } from './definitions';
 
 export class ADEUMMobileCapacitorPluginWeb
@@ -48,7 +47,7 @@ export class ADEUMMobileCapacitorPluginWeb
     withArguments: [];
   }): Promise<{ call_tracker: string }> {
     console.log('beginCall', options);
-    return { call_tracker: uuid() };
+    return { call_tracker: 'call_tracker_guid' };
   }
   async endCall(options: { call_tracker: string }): Promise<void> {
     console.log('endCall', options);
@@ -58,7 +57,7 @@ export class ADEUMMobileCapacitorPluginWeb
     url: string;
   }): Promise<{ http_tracker: string }> {
     console.log('beginHttpRequest', options);
-    return { http_tracker: uuid() };
+    return { http_tracker:  };
   }
   async reportDone(options: { http_tracker: string }): Promise<void> {
     console.log('reportDone', options);
@@ -142,7 +141,7 @@ export class ADEUMMobileCapacitorPluginWeb
   }): Promise<{ session_frame: string }> {
     console.log('should be running');
     console.log('startSessionFrame', options);
-    return { session_frame: uuid() };
+    return { session_frame: 'session_frame_guid' };
   }
   async endSessionFrame(options: { session_frame: string }): Promise<void> {
     console.log('endSessionFrame', options);
