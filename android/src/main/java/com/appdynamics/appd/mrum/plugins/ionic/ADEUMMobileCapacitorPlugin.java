@@ -111,7 +111,7 @@ public class ADEUMMobileCapacitorPlugin extends Plugin {
     public void endCall(PluginCall call){
         JSObject callTracker = call.getObject("call_tracker");
         if (callTracker != null) {
-            implementation.endCall(tracker);
+            implementation.endCall(callTracker);
         }
         call.resolve();
     }

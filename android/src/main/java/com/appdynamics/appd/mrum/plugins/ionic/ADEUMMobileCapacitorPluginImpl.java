@@ -7,6 +7,8 @@ import com.appdynamics.eumagent.runtime.AgentConfiguration;
 import com.appdynamics.eumagent.runtime.CallTracker;
 import com.appdynamics.eumagent.runtime.HttpRequestTracker;
 import com.appdynamics.eumagent.runtime.SessionFrame;
+import com.getcapacitor.JSArray;
+import com.getcapacitor.JSObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -151,272 +153,6 @@ public class ADEUMMobileCapacitorPluginImpl {
         callbackContext.success(VERSION);
     }
 
-    private void startTimer(String name) {
-        Instrumentation.startTimer(name);
-        return;
-    }
-
-    private void stopTimerWithName(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.stopTimer(args.getString(0));
-        callbackContext.success(VERSION);
-    }
-
-    private void reportMetricWithName(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        try {
-            Instrumentation.reportMetric(args.getString(0), Long.parseLong(args.getString(1)));
-            callbackContext.success(VERSION);
-        } catch (NumberFormatException ex) {
-            callbackContext.error("Metric value must be an integer.");
-        }
-        callbackContext.success(VERSION);
-    }
-
-    private void leaveBreadcrumb(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            try {
-                Instrumentation.leaveBreadcrumb(args.getString(0), Integer.parseInt(args.getString(1)));
-            } catch (NumberFormatException ex) {
-                callbackContext.error("Mode value must be an integer - 0 for crashes only or 1 for crashes and sessions.");
-            }
-        } else {
-            Instrumentation.leaveBreadcrumb(args.getString(0));
-        }
-        callbackContext.success(VERSION);
-    }
-
-    private void setUserData(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.setUserData(args.getString(0), args.getString(1));
-        callbackContext.success(VERSION);
-    }
-
-    private void removeUserData(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.setUserData(args.getString(0), null);
-        callbackContext.success();
-    }
-
-    private void takeScreenshot(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.takeScreenshot();
-        callbackContext.success();
-    }
-
-    private void beginCall(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        CallTracker tracker = Instrumentation.beginCall(args.getString(0), args.getString(1), args.getString(2));
-        String uuid = UUID.randomUUID().toString();
-        callTrackers.put(uuid, tracker);
-        callbackContext.success(uuid);
-    }
-
-    private void endCall(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            CallTracker tracker = callTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.reportCallEndedWithReturnValue(args.getString(1));
-                callTrackers.remove(args.getString(0));
-                callbackContext.success();
-            } else
-                callbackContext.error("CallTracker object has already been destroyed.");
-        } else if (args.length() > 0) {
-            CallTracker tracker = callTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.reportCallEnded();
-                callTrackers.remove(args.getString(0));
-                callbackContext.success();
-            } else
-                callbackContext.error("CallTracker object has already been destroyed.");
-        }
-    }
-
-    private void beginHttpRequest(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        try {
-            HttpRequestTracker tracker = Instrumentation.beginHttpRequest(new URL(args.getString(0)));
-            String uuid = UUID.randomUUID().toString();
-            httpRequestTrackers.put(uuid, tracker);
-            callbackContext.success(uuid);
-        } catch (MalformedURLException me) {
-            callbackContext.error("URL argument is not valid.");
-        }
-    }
-
-    private void withURL(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                try {
-                    tracker.withURL(new URL(args.getString(1)));
-                } catch (MalformedURLException me) {
-                    callbackContext.error("URL argument is not valid.");
-                }
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withErrorMessage(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.withError(args.getString(1));
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withResponseCode(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.withResponseCode(args.getInt(1));
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withRequestContentLength(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.withRequestContentLength(args.getLong(1));
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withResponseContentLength(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.withResponseContentLength(args.getLong(1));
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withRequestHeaderFields(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                JSONObject headersObj = args.getJSONObject(1);
-                HashMap headersMap = new HashMap();
-                Iterator itor = headersObj.keys();
-                while (itor.hasNext()) {
-                    String key = (String) itor.next();
-                    String val = headersObj.getString(key);
-                    ArrayList list = new ArrayList();
-                    list.add(val);
-                    // AppD magic headers must be uppercase CORE-39486
-                    if (key.startsWith("adrum")) {
-                        key = key.toUpperCase();
-                    }
-                    headersMap.put(key, list);
-                }
-                tracker.withRequestHeaderFields(headersMap);
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withResponseHeaderFields(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                JSONObject headersObj = args.getJSONObject(1);
-                HashMap headersMap = new HashMap();
-                Iterator itor = headersObj.keys();
-                while (itor.hasNext()) {
-                    String key = (String) itor.next();
-                    String val = headersObj.getString(key);
-                    ArrayList list = new ArrayList();
-                    list.add(val);
-                    // AppD magic headers must be uppercase CORE-39486
-                    if (key.startsWith("adrum")) {
-                        key = key.toUpperCase();
-                    }
-                    headersMap.put(key, list);
-                }
-                tracker.withResponseHeaderFields(headersMap);
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void withInstrumentationSource(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.withInstrumentationSource(args.getString(1));
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void reportDone(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 0) {
-            HttpRequestTracker tracker = httpRequestTrackers.get(args.getString(0));
-            if (tracker != null) {
-                tracker.reportDone();
-            } else
-                callbackContext.error("Invalid tracker object.");
-        } else
-            callbackContext.error("URL argument missing.");
-    }
-
-    private void startNextSession(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.startNextSession();
-        callbackContext.success();
-    }
-
-    private void unblockScreenshots(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.unblockScreenshots();
-        callbackContext.success();
-    }
-
-    private void blockScreenshots(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.blockScreenshots();
-        callbackContext.success();
-    }
-
-    private void screenshotsBlocked(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        callbackContext.success(String.valueOf(Instrumentation.screenshotsBlocked()));
-    }
-
-    private void startSessionFrame(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 0) {
-            SessionFrame sessionFrame = Instrumentation.startSessionFrame(args.getString(0));
-            String uuid = UUID.randomUUID().toString();
-            sessionFrames.put(uuid, sessionFrame);
-            callbackContext.success(uuid);
-        } else
-            callbackContext.error("sessionFrameName argument is missing.");
-    }
-
-    private void updateSessionFrameName(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (args.length() > 1) {
-            SessionFrame sessionFrame = sessionFrames.get(args.getString(0));
-            if (sessionFrame != null) {
-                sessionFrame.updateName(args.getString(1));
-            } else
-                callbackContext.error("Invalid SessionFrame object.");
-        } else
-            callbackContext.error("sessionFrameName argument is missing.");
-    }
-
-    private void endSessionFrame(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        SessionFrame sessionFrame = sessionFrames.get(args.getString(0));
-        if (sessionFrame != null) {
-            sessionFrame.end();
-            sessionFrames.remove(sessionFrame);
-        } else
-            callbackContext.error("Invalid SessionFrame object.");
-    }
-
     public void crash() throws RuntimeException {
         throw new RuntimeException("Crash Attempt");
     }
@@ -438,5 +174,75 @@ public class ADEUMMobileCapacitorPluginImpl {
     public String echo(String value) {
         Log.i("Echo", value);
         return value;
+    }
+    /* Custom method implementation starts here */
+    public void stopTimerWithName(String name) {
+
+    }
+
+    public void reportMetricWithName(String name, Integer value) {
+    }
+
+    public void leaveBreadcrumb(String name) {
+    }
+
+    public void setUserData(String key, String value) {
+    }
+
+    public void removeUserData(String key) {
+    }
+
+    public void takeScreenshot() {
+    }
+
+    public boolean beginCall(String className, String methodName, JSArray args) {
+    }
+
+    public JSObject beginHttpRequest(String url) {
+    }
+
+    public void reportDone() {
+    }
+
+    public void withResponseCode(String tracker, Integer statusCode) {
+    }
+
+    public void withResponseContentLength(String tracker, Integer contentLength) {
+    }
+
+    public void withRequestContentLength(String tracker, Integer contentLength) {
+    }
+
+    public void withResponseHeaderFields(String tracker, JSObject httpHeaders) {
+    }
+
+    public void withErrorMessage(String tracker, String errorMessage) {
+    }
+
+    public boolean getCorrelationHeaders() {
+    }
+
+    public void startNextSession() {
+    }
+
+    public void unblockScreenshots() {
+    }
+
+    public void blockScreenshots() {
+    }
+
+    public Boolean screenshotsBlocked() {
+    }
+
+    public boolean startSessionFrame(String sessionFrameName) {
+    }
+
+    public void endSessionFrame(String sessionFrame) {
+    }
+
+    public void updateSessionFrame(String tracker, String sessionFrameName) {
+    }
+
+    public void endCall(JSObject callTracker) {
     }
 }
