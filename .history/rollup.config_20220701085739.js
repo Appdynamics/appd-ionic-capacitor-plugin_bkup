@@ -1,5 +1,5 @@
-import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 
 export default {
   input: 'dist/esm/index.js',
@@ -21,6 +21,10 @@ export default {
       inlineDynamicImports: true,
     },
   ],
-  plugins: [resolve({ browser: true }), commonjs()],
+  preferBuiltins: true,
+  plugins: [
+    resolve(),
+    commonjs()
+    ]
   external: ['@capacitor/core'],
 };

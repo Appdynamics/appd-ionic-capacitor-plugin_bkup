@@ -21,6 +21,7 @@ export default {
       inlineDynamicImports: true,
     },
   ],
-  plugins: [resolve({ browser: true }), commonjs()],
+  preferBuiltins: true,
+  plugins: [resolve(), commonjs()],
   external: ['@capacitor/core'],
 };
