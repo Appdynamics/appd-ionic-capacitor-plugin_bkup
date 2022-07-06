@@ -1,7 +1,9 @@
 package com.appdynamics.appd.mrum.plugins.ionic;
 
+//import android.app.Instrumentation;
 import android.util.Log;
 
+import com.appdynamics.eumagent.runtime.AgentConfiguration;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -9,13 +11,62 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+
 @CapacitorPlugin(name = "ADEUMMobileCapacitorPlugin")
 public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
     private ADEUMMobileCapacitorPlugin implementation = new ADEUMMobileCapacitorPlugin();
     private static final String PLACEHOLDER_METRIC = "Generic Metric";
     private static final String PLACEHOLDER_KEY = "Generic Key";
-    private static final String PLACEHOLDER_VALUE = "Generic Value";
+//    private static final String PLACEHOLDER_VALUE = "Generic Value";
     private static final String TAG = "ADEUMCapacitorPlugin";
+
+    @Override
+    public void load() {
+        String appKey = getConfig().getString("ADEUM_APP_KEY");
+        //int collectorUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_collector_url", "string", cordova.getActivity().getPackageName());
+        String collectorUrl = getConfig().getString("ADEUM_COLLECTOR_URL");
+        //int screenshotUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshot_url", "string", cordova.getActivity().getPackageName());
+        String screenshotUrl = getConfig().getString("ADEUM_SCREENSHOT_URL");
+        //int screenshotsEnabledResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshots_enabled", "string", cordova.getActivity().getPackageName());
+        boolean screenshotsEnabled = false;
+        try {
+            screenshotsEnabled = Boolean.parseBoolean(getConfig().getString("ADEUM_SCREENSHOTS_ENABLED"));
+        } catch (Exception ignored) {
+        }
+        //int loggingLevelResId = cordova.getActivity().getResources().getIdentifier("adeum_logging_level", "string", cordova.getActivity().getPackageName());
+        int loggingLevel = 2;
+        try {
+            loggingLevel = getConfig().getInt("ADEUM_LOGGING_LEVEL",0);
+
+        } catch (Exception ignored) {
+        }
+        //int interactionCaptureModeResId = cordova.getActivity().getResources().getIdentifier("adeum_interaction_capture_mode", "string", cordova.getActivity().getPackageName());
+        int interactionCaptureMode = 0;
+        try {
+            interactionCaptureMode = Integer.parseInt(getConfig().getString("ADEUM_INTERACTION_CAPTURE_MODE"));
+        } catch (Exception ignored) {
+        }
+
+        AgentConfiguration config = AgentConfiguration.builder().
+                withAppKey(appKey).
+                withContext(this.getContext()).
+                withCollectorURL(collectorUrl).
+                withScreenshotURL(screenshotUrl).
+                withLoggingLevel(loggingLevel).
+                withJSAgentAjaxEnabled(true).
+                withScreenshotsEnabled(screenshotsEnabled).
+                withInteractionCaptureMode(interactionCaptureMode).
+                build();
+
+        // since there is no way to return an error to the host app we keep track of the error
+        // in pluginInitialized flag and return it when a method is invoked on the plugin
+        try {
+            implementation.pluginInitialized(config);
+        } catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.getMessage());
+            implementation.pluginInitialized = false;
+        }
+    }
 
     @PluginMethod
     public void echo(PluginCall call) {
@@ -120,12 +171,15 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         String url = call.getString("url");
         url = url.replaceAll("\\s","").length()==0 ? "" : url;
         Log.d(TAG, " beginHTTPRequest: " + url);
-        if (url.length() > 0){
-            JSObject jsobject = implementation.beginHttpRequest(url);
-            call.resolve(jsobject);
-        }else{
+        if (url.length() <= 0){
             call.resolve();
+            return;
         }
+        String http_tracker = implementation.beginHttpRequest(url);
+        JSObject ret = new JSObject();
+        ret.put("http_tracker", http_tracker);
+        call.resolve(ret);
+
     }
 
     @PluginMethod

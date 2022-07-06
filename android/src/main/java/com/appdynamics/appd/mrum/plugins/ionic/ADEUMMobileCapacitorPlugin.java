@@ -1,9 +1,7 @@
 package com.appdynamics.appd.mrum.plugins.ionic;
 
-import android.app.Instrumentation;
 import android.util.Log;
-import com.appdynamics.eumagent.runtime.Instrumentation;
-import com.appdynamics.eumagent.runtime.InstrumentationCallbacks;
+//import com.appdynamics.eumagent.runtime.Instrumentation;
 import com.appdynamics.eumagent.runtime.AgentConfiguration;
 import com.appdynamics.eumagent.runtime.CallTracker;
 import com.appdynamics.eumagent.runtime.HttpRequestTracker;
@@ -12,9 +10,6 @@ import com.appdynamics.eumagent.runtime.ServerCorrelationHeaders;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -24,85 +19,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.net.URL;
 import java.net.MalformedURLException;
-import android.webkit.WebView;
 
 public class ADEUMMobileCapacitorPlugin {
     private final static String ADEumPluginType = "Ionic Capacitor";
     private final static String VERSION = "1.1.0";
     private final static String TAG = "EUMCapacitorPlgImpl";
-    private HashMap<String, CallTracker> callTrackers;
-    private HashMap<String, HttpRequestTracker> httpRequestTrackers;
-    private HashMap<String, SessionFrame> sessionFrames;
-    private boolean pluginInitialized;
+    private HashMap<String, CallTracker> callTrackers = new HashMap<>();
+    private HashMap<String, HttpRequestTracker> httpRequestTrackers = new HashMap<>();
+    private HashMap<String, SessionFrame> sessionFrames = new HashMap<>();
+    public boolean pluginInitialized;
 
-    //public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-    public void load() {
-        //super.initialize(cordova, webView);
-        callTrackers = new HashMap<String, CallTracker>();
-        httpRequestTrackers = new HashMap<String, HttpRequestTracker>();
-        sessionFrames = new HashMap<String, SessionFrame>();
-
-        // Initialize the agent before the Cordova WebView loads the default page
-
-        //int appKeyResId = cordova.getActivity().getResources().getIdentifier("adeum_app_key", "string", cordova.getActivity().getPackageName());
-        String appKey = getConfig.getString("adeum_app_key");
-        //int collectorUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_collector_url", "string", cordova.getActivity().getPackageName());
-        String collectorUrl = getConfig.getString("adeum_collector_url");
-        //int screenshotUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshot_url", "string", cordova.getActivity().getPackageName());
-        String screenshotUrl = getConfig.getString("adeum_screenshot_url");
-        //int screenshotsEnabledResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshots_enabled", "string", cordova.getActivity().getPackageName());
-        boolean screenshotsEnabled = false;
-        try {
-            screenshotsEnabled = Boolean.parseBoolean(getConfig.getString("adeum_screenshots_enabled"));
-        } catch (Exception ex) {
-        }
-        //int loggingLevelResId = cordova.getActivity().getResources().getIdentifier("adeum_logging_level", "string", cordova.getActivity().getPackageName());
-        int loggingLevel = 2;
-        try {
-            loggingLevel = Integer.parseInt(getConfig.getString("adeum_logging_level"));
-            switch (loggingLevel) {
-                case 6: //verbose
-                case 5:
-                case 4:
-                    loggingLevel = 1;
-                    break;
-                case 3: //info
-                case 2:
-                case 1:
-                    loggingLevel = 2;
-                    break;
-            }
-        } catch (Exception ex) {
-        }
-        //int interactionCaptureModeResId = cordova.getActivity().getResources().getIdentifier("adeum_interaction_capture_mode", "string", cordova.getActivity().getPackageName());
-        int interactionCaptureMode = 0;
-        try {
-            interactionCaptureMode = Integer.parseInt(getConfig().getString("adeum_interaction_capture_mode"));
-        } catch (Exception ex) {
-        }
-
-        AgentConfiguration config = AgentConfiguration.builder().
-                withAppKey(appKey).
-                withContext(cordova.getActivity()).
-                withCollectorURL(collectorUrl).
-                withScreenshotURL(screenshotUrl).
-                withLoggingLevel(loggingLevel).
-                withJSAgentAjaxEnabled(true).
-                withScreenshotsEnabled(screenshotsEnabled).
-                withInteractionCaptureMode(interactionCaptureMode).
-                build();
-
-        // since there is no way to return an error to the host app we keep track of the error
-        // in pluginInitialized flag and return it when a method is invoked on the plugin
-        try {
-            Instrumentation.startFromHybrid(config, ADEumPluginType, VERSION);
-            pluginInitialized = true;
-        } catch (IllegalArgumentException ex) {
-            Log.e(TAG, ex.getMessage());
-            pluginInitialized = false;
-        }
+    public ADEUMMobileCapacitorPlugin() {
     }
 
+
+    public void pluginInitialized(AgentConfiguration config){
+        com.appdynamics.eumagent.runtime.Instrumentation.start(config);
+        pluginInitialized = true;
+    }
 
     public void clear() {
         if (callTrackers != null)
@@ -117,56 +51,13 @@ public class ADEUMMobileCapacitorPlugin {
         return VERSION;
     }
 
-    private void initWithAppKey(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        AgentConfiguration config = AgentConfiguration.builder().withAppKey(args.getString(0)).build();
-        Instrumentation.startFromHybrid(config, ADEumPluginType, VERSION);
-        callbackContext.success(VERSION);
-    }
-
-    private void initWithConfiguration(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        JSONObject map = args.getJSONObject(0);
-        int loggingLevel = map.getInt("loggingLevel");
-        //map from shared values to android agent specific ones
-        int loggingLevelAndroid = 3;
-        switch (loggingLevel) {
-            case 6: //verbose
-            case 5:
-            case 4:
-                loggingLevelAndroid = 1;
-                break;
-            case 3: //info
-            case 2:
-            case 1:
-                loggingLevelAndroid = 2;
-                break;
-        }
-
-        AgentConfiguration config = AgentConfiguration.builder().
-                withAppKey(map.getString("appKey")).
-                withContext(cordova.getActivity()).
-                withCollectorURL(map.getString("collectorUrl")).
-                withScreenshotURL(map.getString("screenshotUrl")).
-                withLoggingLevel(loggingLevelAndroid).
-                withJSAgentAjaxEnabled(true).
-                withScreenshotsEnabled(map.getBoolean("screenshots")).
-                build();
-
-        Instrumentation.startFromHybrid(config, ADEumPluginType, VERSION);
-        callbackContext.success(VERSION);
-    }
-
-    private void changeAppKey(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Instrumentation.changeAppKey(args.getString(0));
-        callbackContext.success(VERSION);
-    }
-
     public void crash() throws RuntimeException {
         throw new RuntimeException("Crash Attempt");
     }
 
     public void flush() {
         try {
-            HttpRequestTracker tracker = Instrumentation.beginHttpRequest(new URL("http://flush.queue"));
+            HttpRequestTracker tracker = com.appdynamics.eumagent.runtime.Instrumentation.beginHttpRequest(new URL("http://flush.queue"));
             tracker.withResponseCode(200).reportDone();
             //callbackContext.success();
         } catch (MalformedURLException mue) {
@@ -184,47 +75,46 @@ public class ADEUMMobileCapacitorPlugin {
     }
     /* Custom method implementation starts here */
     public void stopTimerWithName(String name) {
-        Instrumentation.stopTimer(name);
+        com.appdynamics.eumagent.runtime.Instrumentation.stopTimer(name);
     }
 
     public void reportMetricWithName(String name, Integer value) {
-        Instrumentation.reportMetric(name, value);
+        com.appdynamics.eumagent.runtime.Instrumentation.reportMetric(name, value);
     }
 
     public void leaveBreadcrumb(String name) {
-        Instrumentation.leaveBreadcrumb(args.getString(0), Integer.parseInt(args.getString(1)));
+        com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb(name);
     }
 
     public void setUserData(String key, String value) {
-        Instrumentation.setUserData(key, value);
+        com.appdynamics.eumagent.runtime.Instrumentation.setUserData(key, value);
     }
 
     public void removeUserData(String key) {
-        Instrumentation.removeUserData(key);
+        //function is missing from sdk
+        //com.appdynamics.eumagent.runtime.Instrumentation.removeUserData(key);
     }
 
     public void takeScreenshot() {
-        Instrumentation.takeScreenshot();
+        com.appdynamics.eumagent.runtime.Instrumentation.takeScreenshot();
     }
 
     public String beginCall(String className, String methodName, JSArray args) {
-        CallTracker callTracker = Instrumentation.beginCall(className, methodName, args);
+        CallTracker callTracker = com.appdynamics.eumagent.runtime.Instrumentation.beginCall(className, methodName, args);
         String uuid = UUID.randomUUID().toString();
         callTrackers.put(uuid, callTracker);
         return uuid;
     }
 
-    public JSObject beginHttpRequest(String url) {
+    public String beginHttpRequest(String url) {
+        String uuid = UUID.randomUUID().toString();
         try {
-            HttpRequestTracker tracker = Instrumentation.beginHttpRequest(new URL(url);
-            String uuid = UUID.randomUUID().toString();
+            HttpRequestTracker tracker = com.appdynamics.eumagent.runtime.Instrumentation.beginHttpRequest(new URL(url));
             httpRequestTrackers.put(uuid, tracker);
-            JSObject jsObject = new JSObject();
-            jsObject.put("uuid", uuid);
-            return jsObject;
         } catch (MalformedURLException me){
             Log.e(TAG, me.getMessage());
         }
+        return uuid;
     }
 
     public void reportDone(String trackerId) {
@@ -245,7 +135,7 @@ public class ADEUMMobileCapacitorPlugin {
         }
     }
 
-    public void withResponseContentLength(String trackerId, Integer contentLength) {
+    public void withResponseContentLength(String trackerId, long contentLength) {
         try{
             HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
             tracker.withResponseContentLength(contentLength);
@@ -254,7 +144,7 @@ public class ADEUMMobileCapacitorPlugin {
         }
     }
 
-    public void withRequestContentLength(String trackerId, Integer contentLength) {
+    public void withRequestContentLength(String trackerId, long contentLength) {
         try{
             HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
             tracker.withResponseContentLength(contentLength);
@@ -328,23 +218,23 @@ public class ADEUMMobileCapacitorPlugin {
     }
 
     public void startNextSession() {
-        Instrumentation.startNextSession();
+        com.appdynamics.eumagent.runtime.Instrumentation.startNextSession();
     }
 
     public void unblockScreenshots() {
-        Instrumentation.unblockScreenshots();
+        com.appdynamics.eumagent.runtime.Instrumentation.unblockScreenshots();
     }
 
     public void blockScreenshots() {
-        Instrumentation.blockScreenshots();
+        com.appdynamics.eumagent.runtime.Instrumentation.blockScreenshots();
     }
 
     public Boolean screenshotsBlocked() {
-        return Instrumentation.screenshotsBlocked();
+        return com.appdynamics.eumagent.runtime.Instrumentation.screenshotsBlocked();
     }
 
     public String startSessionFrame(String sessionFrameName) {
-        SessionFrame sessionFrame = Instrumentation.startSessionFrame(sessionFrameName);
+        SessionFrame sessionFrame = com.appdynamics.eumagent.runtime.Instrumentation.startSessionFrame(sessionFrameName);
         String uuid = UUID.randomUUID().toString();
         sessionFrames.put(uuid, sessionFrame);
         return uuid;
@@ -371,6 +261,6 @@ public class ADEUMMobileCapacitorPlugin {
     }
 
     public void startTimeWithName(String name) {
-        Instrumentation.startTimer(name);
+        com.appdynamics.eumagent.runtime.Instrumentation.startTimer(name);
     }
 }

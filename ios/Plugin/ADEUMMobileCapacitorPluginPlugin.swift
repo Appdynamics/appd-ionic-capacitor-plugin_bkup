@@ -95,6 +95,7 @@ public class ADEUMMobileCapacitorPluginPlugin: CAPPlugin {
             call.resolve()
             return
         }
+        //do we need to strip spaces?
         let url = URL.init(string:url_string!)
         let http_tracker = implementation.beginHttpRequest(url: url!)
         call.resolve([
