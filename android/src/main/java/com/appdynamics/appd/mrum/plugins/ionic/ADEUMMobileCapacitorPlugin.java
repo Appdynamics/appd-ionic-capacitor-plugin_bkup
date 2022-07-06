@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 public class ADEUMMobileCapacitorPlugin {
     private final static String ADEumPluginType = "Ionic Capacitor";
     private final static String VERSION = "1.1.0";
-    private final static String TAG = "EUMCapacitorPlgImpl";
+    private final static String TAG = "ADEUMCapacitorPlgImpl";
     private HashMap<String, CallTracker> callTrackers = new HashMap<>();
     private HashMap<String, HttpRequestTracker> httpRequestTrackers = new HashMap<>();
     private HashMap<String, SessionFrame> sessionFrames = new HashMap<>();
@@ -33,23 +33,6 @@ public class ADEUMMobileCapacitorPlugin {
     }
 
 
-    public void pluginInitialized(AgentConfiguration config){
-        com.appdynamics.eumagent.runtime.Instrumentation.start(config);
-        pluginInitialized = true;
-    }
-
-    public void clear() {
-        if (callTrackers != null)
-            callTrackers.clear();
-        if (httpRequestTrackers != null)
-            httpRequestTrackers.clear();
-        if (sessionFrames != null)
-            sessionFrames.clear();
-    }
-
-    public String getVersion() {
-        return VERSION;
-    }
 
     public void crash() throws RuntimeException {
         throw new RuntimeException("Crash Attempt");
@@ -68,12 +51,22 @@ public class ADEUMMobileCapacitorPlugin {
         return pluginInitialized;
     }
 
-
+    /* Custom method implementation starts here */
     public String echo(String value) {
         Log.i("Echo", value);
         return value;
     }
-    /* Custom method implementation starts here */
+
+    public void pluginInitialize(AgentConfiguration config){
+        com.appdynamics.eumagent.runtime.Instrumentation.start(config);
+        pluginInitialized = true;
+    }
+
+    public void startTimerWithName(String name) {
+        com.appdynamics.eumagent.runtime.Instrumentation.startTimer(name);
+    }
+
+
     public void stopTimerWithName(String name) {
         com.appdynamics.eumagent.runtime.Instrumentation.stopTimer(name);
     }
@@ -104,6 +97,12 @@ public class ADEUMMobileCapacitorPlugin {
         String uuid = UUID.randomUUID().toString();
         callTrackers.put(uuid, callTracker);
         return uuid;
+    }
+
+    public void endCall(JSObject callTrackerId) {
+        CallTracker callTracker = callTrackers.get(callTrackerId);
+        callTracker.reportCallEnded();
+        callTrackers.remove(callTrackerId);
     }
 
     public String beginHttpRequest(String url) {
@@ -203,6 +202,15 @@ public class ADEUMMobileCapacitorPlugin {
         }
     }
 
+    public void withInstrumentationSource(String trackerId, String information_source) {
+        try{
+            HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
+            tracker.withInstrumentationSource(information_source);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
+    }
+
     public void withErrorMessage(String trackerId, String errorMessage) {
         try{
             HttpRequestTracker tracker = httpRequestTrackers.get(trackerId);
@@ -240,27 +248,40 @@ public class ADEUMMobileCapacitorPlugin {
         return uuid;
     }
 
-    public void endSessionFrame(String sessionFrameName) {
+    public void endSessionFrame(String session_key) {
         try{
-            SessionFrame sessionFrame = sessionFrames.get(sessionFrameName);
+            SessionFrame sessionFrame = sessionFrames.get(session_key);
             sessionFrame.end();
-            sessionFrames.remove(sessionFrameName);
+            sessionFrames.remove(session_key);
         }catch(Exception e){
             Log.e(TAG, "Invalid Tracker Object");
         }
     }
 
-    public void updateSessionFrame(String tracker, String sessionFrameName) {
-
+    public void updateSessionFrame(String session_key, String sessionFrameName) {
+        try{
+            SessionFrame sessionFrame = sessionFrames.get(session_key);
+            sessionFrame.updateName(sessionFrameName);
+            sessionFrames.put(session_key, sessionFrame);
+        }catch(Exception e){
+            Log.e(TAG, "Invalid Tracker Object");
+        }
     }
 
-    public void endCall(JSObject callTrackerId) {
-        CallTracker callTracker = callTrackers.get(callTrackerId);
-        callTracker.reportCallEnded();
-        callTrackers.remove(callTrackerId);
+    public String getVersion() {
+        return VERSION;
     }
 
-    public void startTimeWithName(String name) {
-        com.appdynamics.eumagent.runtime.Instrumentation.startTimer(name);
+    public void clear() {
+        if (callTrackers != null)
+            callTrackers.clear();
+        if (httpRequestTrackers != null)
+            httpRequestTrackers.clear();
+        if (sessionFrames != null)
+            sessionFrames.clear();
     }
+
+
+
+
 }

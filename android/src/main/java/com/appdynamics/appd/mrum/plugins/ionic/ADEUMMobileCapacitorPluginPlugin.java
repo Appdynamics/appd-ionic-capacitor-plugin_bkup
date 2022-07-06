@@ -20,54 +20,6 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
 //    private static final String PLACEHOLDER_VALUE = "Generic Value";
     private static final String TAG = "ADEUMCapacitorPlugin";
 
-    @Override
-    public void load() {
-        String appKey = getConfig().getString("ADEUM_APP_KEY");
-        //int collectorUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_collector_url", "string", cordova.getActivity().getPackageName());
-        String collectorUrl = getConfig().getString("ADEUM_COLLECTOR_URL");
-        //int screenshotUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshot_url", "string", cordova.getActivity().getPackageName());
-        String screenshotUrl = getConfig().getString("ADEUM_SCREENSHOT_URL");
-        //int screenshotsEnabledResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshots_enabled", "string", cordova.getActivity().getPackageName());
-        boolean screenshotsEnabled = false;
-        try {
-            screenshotsEnabled = Boolean.parseBoolean(getConfig().getString("ADEUM_SCREENSHOTS_ENABLED"));
-        } catch (Exception ignored) {
-        }
-        //int loggingLevelResId = cordova.getActivity().getResources().getIdentifier("adeum_logging_level", "string", cordova.getActivity().getPackageName());
-        int loggingLevel = 2;
-        try {
-            loggingLevel = getConfig().getInt("ADEUM_LOGGING_LEVEL",0);
-
-        } catch (Exception ignored) {
-        }
-        //int interactionCaptureModeResId = cordova.getActivity().getResources().getIdentifier("adeum_interaction_capture_mode", "string", cordova.getActivity().getPackageName());
-        int interactionCaptureMode = 0;
-        try {
-            interactionCaptureMode = Integer.parseInt(getConfig().getString("ADEUM_INTERACTION_CAPTURE_MODE"));
-        } catch (Exception ignored) {
-        }
-
-        AgentConfiguration config = AgentConfiguration.builder().
-                withAppKey(appKey).
-                withContext(this.getContext()).
-                withCollectorURL(collectorUrl).
-                withScreenshotURL(screenshotUrl).
-                withLoggingLevel(loggingLevel).
-                withJSAgentAjaxEnabled(true).
-                withScreenshotsEnabled(screenshotsEnabled).
-                withInteractionCaptureMode(interactionCaptureMode).
-                build();
-
-        // since there is no way to return an error to the host app we keep track of the error
-        // in pluginInitialized flag and return it when a method is invoked on the plugin
-        try {
-            implementation.pluginInitialized(config);
-        } catch (IllegalArgumentException ex) {
-            Log.e(TAG, ex.getMessage());
-            implementation.pluginInitialized = false;
-        }
-    }
-
     @PluginMethod
     public void echo(PluginCall call) {
         String value = call.getString("value");
@@ -77,18 +29,18 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void startTimerWithName(PluginCall call) {
+    public void startTimer(PluginCall call) {
         String name = call.getString("name");
-        Log.d(TAG, " startTimerWithName: " + name);
-        implementation.startTimeWithName(name);
+        Log.d(TAG, " startTimer: " + name);
+        implementation.startTimerWithName(name);
         call.resolve();
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void stopTimerWithName(PluginCall call) {
+    public void stopTimer(PluginCall call) {
         String name = call.getString("name");
         name = name.replaceAll("\\s","").length()==0 ? PLACEHOLDER_METRIC : name;
-        Log.d(TAG, " stopTimerWithName: " + name);
+        Log.d(TAG, " stopTimer: " + name);
         implementation.stopTimerWithName(name);
         call.resolve();
     }
@@ -183,11 +135,6 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void withURL(PluginCall call){
-        //unimplemented due to ambiguity
-    }
-
-    @PluginMethod
     public void reportDone(PluginCall call){
         String tracker = call.getString("http_tracker");
         tracker = tracker.replaceAll("\\s","").length()==0 ? "" : tracker;
@@ -247,6 +194,16 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         JSObject httpHeaders =  call.getObject("http_headers");
         if (tracker.replaceAll("\\s","").length() > 0){
             implementation.withRequestHeaderFields(tracker, httpHeaders);
+        }
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void withInstrumentationSource(PluginCall call){
+        String tracker = call.getString("http_tracker");
+        String information_source = call.getString("information_source");
+        if (tracker.replaceAll("\\s","").length() > 0){
+            implementation.withInstrumentationSource(tracker, information_source);
         }
         call.resolve();
     }
@@ -337,6 +294,9 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
         implementation.clear();
     }
 
+    /*
+    * Ios I did not expose a method like this for the plugin but may need to so leaving
+    * commented out for now
     @PluginMethod
     public void checkPluginInitialized(PluginCall call) {
         boolean is_initialized = false;
@@ -351,7 +311,7 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
             //call.resolve(ret);
             call.resolve();
         }
-    }
+    }*/
 
 
     @PluginMethod
@@ -365,5 +325,53 @@ public class ADEUMMobileCapacitorPluginPlugin extends Plugin {
             call.resolve(ret);
         }
 
+    }
+
+    @Override
+    public void load() {
+        String appKey = getConfig().getString("ADEUM_APP_KEY");
+        //int collectorUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_collector_url", "string", cordova.getActivity().getPackageName());
+        String collectorUrl = getConfig().getString("ADEUM_COLLECTOR_URL");
+        //int screenshotUrlResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshot_url", "string", cordova.getActivity().getPackageName());
+        String screenshotUrl = getConfig().getString("ADEUM_SCREENSHOT_URL");
+        //int screenshotsEnabledResId = cordova.getActivity().getResources().getIdentifier("adeum_screenshots_enabled", "string", cordova.getActivity().getPackageName());
+        boolean screenshotsEnabled = false;
+        try {
+            screenshotsEnabled = Boolean.parseBoolean(getConfig().getString("ADEUM_SCREENSHOTS_ENABLED"));
+        } catch (Exception ignored) {
+        }
+        //int loggingLevelResId = cordova.getActivity().getResources().getIdentifier("adeum_logging_level", "string", cordova.getActivity().getPackageName());
+        int loggingLevel = 2;
+        try {
+            loggingLevel = getConfig().getInt("ADEUM_LOGGING_LEVEL",0);
+
+        } catch (Exception ignored) {
+        }
+        //int interactionCaptureModeResId = cordova.getActivity().getResources().getIdentifier("adeum_interaction_capture_mode", "string", cordova.getActivity().getPackageName());
+        int interactionCaptureMode = 0;
+        try {
+            interactionCaptureMode = Integer.parseInt(getConfig().getString("ADEUM_INTERACTION_CAPTURE_MODE"));
+        } catch (Exception ignored) {
+        }
+
+        AgentConfiguration config = AgentConfiguration.builder().
+                withAppKey(appKey).
+                withContext(this.getContext()).
+                withCollectorURL(collectorUrl).
+                withScreenshotURL(screenshotUrl).
+                withLoggingLevel(loggingLevel).
+                withJSAgentAjaxEnabled(true).
+                withScreenshotsEnabled(screenshotsEnabled).
+                withInteractionCaptureMode(interactionCaptureMode).
+                build();
+
+        // since there is no way to return an error to the host app we keep track of the error
+        // in pluginInitialized flag and return it when a method is invoked on the plugin
+        try {
+            implementation.pluginInitialize(config);
+        } catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.getMessage());
+            implementation.pluginInitialized = false;
+        }
     }
 }

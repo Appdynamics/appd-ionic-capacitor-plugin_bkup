@@ -5,6 +5,7 @@ import Capacitor
 @objc public class ADEUMMobileCapacitorPlugin: NSObject {
     
     var reference_map = [String:Any]()
+    private let VERSION = "1.1.0"
     
     @objc public func generateKey() -> String {
         return UUID().uuidString
@@ -163,42 +164,11 @@ import Capacitor
     }
     
     @objc public func getVersion() -> String {
-        var version = "1.0.0"
-        version = String(ADEumInstrumentation.version())
-        return version
+        return VERSION
     }
     
     @objc public func clear() -> Void {
         reference_map.removeAll()
     }
     
-    /*
-     - (void)updateSessionFrameName:(CDVInvokedUrlCommand*)command {
-         CDVPluginResult *result;
-         @try {
-             if ([command.arguments count] < 2) {
-                 [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-                 NSLog(@"Obj-C updateSessionFrameName called -- bad command");
-             } else if ([command.arguments count] >= 2) {
-                 NSString *key = [command argumentAtIndex:0 withDefault:nil andClass:[NSString class]];
-                 NSString *sessionFrameName = [command argumentAtIndex:1 withDefault:nil andClass:[NSString class]];
-                 if ([key length] > 0 && [sessionFrameName length] > 0) {
-                     ADEumSessionFrame *sessionFrame = [self.keymap objectForKey:key];
-                     if (sessionFrame != nil) {
-                         [sessionFrame updateName:sessionFrameName];
-                         NSLog(@"updateSessionFrameName %@, %@", key, sessionFrameName);
-                         result = [self finalizeSuccessfulResult:nil];
-                     } else {
-                         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"SessionFrame not found"];
-                     }
-                 } else {
-                     result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid SessionFrame object"];
-                 }
-             }
-         } @catch (NSException *exception) {
-             result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[exception reason]];
-         }
-         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-     }
-     */
 }
