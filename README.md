@@ -1,6 +1,6 @@
 # appd-ionic-capacitor-plugin
 
-AppDynamics Mobile EUM Agent
+AppDynamics Mobile EUM Agent Plugin
 
 ## Install
 
