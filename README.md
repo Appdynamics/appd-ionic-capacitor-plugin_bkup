@@ -7,8 +7,10 @@ AppDynamics Mobile EUM Agent Plugin
 1. Download the repository this README is in. https://github.com/jeremydavis02/appd-ionic-capacitor-plugin
 2. In the downloaded repos main folder run 'npm install'
 3. Then run 'npm run build'
-4. In your ionic application we then run 'npm install /path/to/plugin/repo'
-5. In your ionic application then run 'npx cap sync'
+4. In the ionic application we then run 'npm install /path/to/plugin/repo'
+5. In the ionic application then run 'npx cap sync'
+6. In the IOS application within the ionic application the cocoa pod install of
+   the AppDynamics Agent should be done, referenced here: https://docs.appdynamics.com/appd/22.x/22.5/en/end-user-monitoring/mobile-real-user-monitoring/instrument-ios-applications/install-the-ios-sdk#id-.InstalltheiOSSDKv22.1-cocoapods-install
 
 ## API
 
