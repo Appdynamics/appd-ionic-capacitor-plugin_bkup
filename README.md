@@ -4,45 +4,46 @@ AppDynamics Mobile EUM Agent Plugin
 
 ## Install
 
-```bash
-npm install appd-ionic-capacitor-plugin
-npx cap sync
-```
+1. Download the repository this README is in. https://github.com/jeremydavis02/appd-ionic-capacitor-plugin
+2. In the downloaded repos main folder run 'npm install'
+3. Then run 'npm run build'
+4. In your ionic application we then run 'npm install /path/to/plugin/repo'
+5. In your ionic application then run 'npx cap sync'
 
 ## API
 
 <docgen-index>
 
-* [`echo(...)`](#echo)
-* [`startTimer(...)`](#starttimer)
-* [`stopTimer(...)`](#stoptimer)
-* [`reportMetricWithName(...)`](#reportmetricwithname)
-* [`leaveBreadcrumb(...)`](#leavebreadcrumb)
-* [`setUserData(...)`](#setuserdata)
-* [`removeUserData(...)`](#removeuserdata)
-* [`beginCall(...)`](#begincall)
-* [`endCall(...)`](#endcall)
-* [`beginHttpRequest(...)`](#beginhttprequest)
-* [`reportDone(...)`](#reportdone)
-* [`withResponseCode(...)`](#withresponsecode)
-* [`withResponseContentLength(...)`](#withresponsecontentlength)
-* [`withRequestContentLength(...)`](#withrequestcontentlength)
-* [`withResponseHeaderFields(...)`](#withresponseheaderfields)
-* [`withRequestHeaderFields(...)`](#withrequestheaderfields)
-* [`withInstrumentationSource(...)`](#withinstrumentationsource)
-* [`withErrorMessage(...)`](#witherrormessage)
-* [`getCorrelationHeaders()`](#getcorrelationheaders)
-* [`startNextSession()`](#startnextsession)
-* [`unblockScreenshots()`](#unblockscreenshots)
-* [`blockScreenshots()`](#blockscreenshots)
-* [`screenshotsBlocked()`](#screenshotsblocked)
-* [`takeScreenshot()`](#takescreenshot)
-* [`startSessionFrame(...)`](#startsessionframe)
-* [`endSessionFrame(...)`](#endsessionframe)
-* [`updateSessionFrameName(...)`](#updatesessionframename)
-* [`getVersion()`](#getversion)
-* [`clear()`](#clear)
-* [Interfaces](#interfaces)
+- [`echo(...)`](#echo)
+- [`startTimer(...)`](#starttimer)
+- [`stopTimer(...)`](#stoptimer)
+- [`reportMetricWithName(...)`](#reportmetricwithname)
+- [`leaveBreadcrumb(...)`](#leavebreadcrumb)
+- [`setUserData(...)`](#setuserdata)
+- [`removeUserData(...)`](#removeuserdata)
+- [`beginCall(...)`](#begincall)
+- [`endCall(...)`](#endcall)
+- [`beginHttpRequest(...)`](#beginhttprequest)
+- [`reportDone(...)`](#reportdone)
+- [`withResponseCode(...)`](#withresponsecode)
+- [`withResponseContentLength(...)`](#withresponsecontentlength)
+- [`withRequestContentLength(...)`](#withrequestcontentlength)
+- [`withResponseHeaderFields(...)`](#withresponseheaderfields)
+- [`withRequestHeaderFields(...)`](#withrequestheaderfields)
+- [`withInstrumentationSource(...)`](#withinstrumentationsource)
+- [`withErrorMessage(...)`](#witherrormessage)
+- [`getCorrelationHeaders()`](#getcorrelationheaders)
+- [`startNextSession()`](#startnextsession)
+- [`unblockScreenshots()`](#unblockscreenshots)
+- [`blockScreenshots()`](#blockscreenshots)
+- [`screenshotsBlocked()`](#screenshotsblocked)
+- [`takeScreenshot()`](#takescreenshot)
+- [`startSessionFrame(...)`](#startsessionframe)
+- [`endSessionFrame(...)`](#endsessionframe)
+- [`updateSessionFrameName(...)`](#updatesessionframename)
+- [`getVersion()`](#getversion)
+- [`clear()`](#clear)
+- [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -61,8 +62,7 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 
 **Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
 
---------------------
-
+---
 
 ### startTimer(...)
 
@@ -74,8 +74,7 @@ startTimer(options: { name: string; }) => void
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
---------------------
-
+---
 
 ### stopTimer(...)
 
@@ -87,8 +86,7 @@ stopTimer(options: { name: string; }) => void
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
---------------------
-
+---
 
 ### reportMetricWithName(...)
 
@@ -100,8 +98,7 @@ reportMetricWithName(options: { name: string; value: number; }) => void
 | ------------- | --------------------------------------------- |
 | **`options`** | <code>{ name: string; value: number; }</code> |
 
---------------------
-
+---
 
 ### leaveBreadcrumb(...)
 
@@ -113,8 +110,7 @@ leaveBreadcrumb(options: { name: string; }) => void
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
---------------------
-
+---
 
 ### setUserData(...)
 
@@ -126,8 +122,7 @@ setUserData(options: { key: string; value: string; }) => void
 | ------------- | -------------------------------------------- |
 | **`options`** | <code>{ key: string; value: string; }</code> |
 
---------------------
-
+---
 
 ### removeUserData(...)
 
@@ -139,8 +134,7 @@ removeUserData(options: { key: string; }) => void
 | ------------- | ----------------------------- |
 | **`options`** | <code>{ key: string; }</code> |
 
---------------------
-
+---
 
 ### beginCall(...)
 
@@ -154,8 +148,7 @@ beginCall(options: { className: string; methodName: string; withArguments: []; }
 
 **Returns:** <code>Promise&lt;{ call_tracker: string; }&gt;</code>
 
---------------------
-
+---
 
 ### endCall(...)
 
@@ -167,8 +160,7 @@ endCall(options: { call_tracker: string; }) => void
 | ------------- | -------------------------------------- |
 | **`options`** | <code>{ call_tracker: string; }</code> |
 
---------------------
-
+---
 
 ### beginHttpRequest(...)
 
@@ -182,8 +174,7 @@ beginHttpRequest(options: { url: string; }) => Promise<{ http_tracker: string; }
 
 **Returns:** <code>Promise&lt;{ http_tracker: string; }&gt;</code>
 
---------------------
-
+---
 
 ### reportDone(...)
 
@@ -195,8 +186,7 @@ reportDone(options: { http_tracker: string; }) => void
 | ------------- | -------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; }</code> |
 
---------------------
-
+---
 
 ### withResponseCode(...)
 
@@ -208,8 +198,7 @@ withResponseCode(options: { http_tracker: string; status_code: string; }) => voi
 | ------------- | ----------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; status_code: string; }</code> |
 
---------------------
-
+---
 
 ### withResponseContentLength(...)
 
@@ -221,8 +210,7 @@ withResponseContentLength(options: { http_tracker: string; content_length: numbe
 | ------------- | -------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; content_length: number; }</code> |
 
---------------------
-
+---
 
 ### withRequestContentLength(...)
 
@@ -234,8 +222,7 @@ withRequestContentLength(options: { http_tracker: string; content_length: number
 | ------------- | -------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; content_length: number; }</code> |
 
---------------------
-
+---
 
 ### withResponseHeaderFields(...)
 
@@ -247,8 +234,7 @@ withResponseHeaderFields(options: { http_tracker: string; http_headers: Map<stri
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; http_headers: <a href="#map">Map</a>&lt;string, string&gt;; }</code> |
 
---------------------
-
+---
 
 ### withRequestHeaderFields(...)
 
@@ -260,8 +246,7 @@ withRequestHeaderFields(options: { http_tracker: string; http_headers: Map<strin
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; http_headers: <a href="#map">Map</a>&lt;string, string&gt;; }</code> |
 
---------------------
-
+---
 
 ### withInstrumentationSource(...)
 
@@ -273,8 +258,7 @@ withInstrumentationSource(options: { http_tracker: string; information_source: s
 | ------------- | ------------------------------------------------------------------ |
 | **`options`** | <code>{ http_tracker: string; information_source: string; }</code> |
 
---------------------
-
+---
 
 ### withErrorMessage(...)
 
@@ -286,8 +270,7 @@ withErrorMessage(options: { http_tracker: string; error_message: string; }) => v
 | ------------- | ------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; error_message: string; }</code> |
 
---------------------
-
+---
 
 ### getCorrelationHeaders()
 
@@ -297,8 +280,7 @@ getCorrelationHeaders() => Promise<{ headers: Map<string, string>; }>
 
 **Returns:** <code>Promise&lt;{ headers: <a href="#map">Map</a>&lt;string, string&gt;; }&gt;</code>
 
---------------------
-
+---
 
 ### startNextSession()
 
@@ -306,8 +288,7 @@ getCorrelationHeaders() => Promise<{ headers: Map<string, string>; }>
 startNextSession() => void
 ```
 
---------------------
-
+---
 
 ### unblockScreenshots()
 
@@ -315,8 +296,7 @@ startNextSession() => void
 unblockScreenshots() => void
 ```
 
---------------------
-
+---
 
 ### blockScreenshots()
 
@@ -324,8 +304,7 @@ unblockScreenshots() => void
 blockScreenshots() => void
 ```
 
---------------------
-
+---
 
 ### screenshotsBlocked()
 
@@ -335,8 +314,7 @@ screenshotsBlocked() => Promise<{ screenshots_blocked: boolean; }>
 
 **Returns:** <code>Promise&lt;{ screenshots_blocked: boolean; }&gt;</code>
 
---------------------
-
+---
 
 ### takeScreenshot()
 
@@ -344,8 +322,7 @@ screenshotsBlocked() => Promise<{ screenshots_blocked: boolean; }>
 takeScreenshot() => void
 ```
 
---------------------
-
+---
 
 ### startSessionFrame(...)
 
@@ -359,8 +336,7 @@ startSessionFrame(options: { session_frame_name: string; }) => Promise<{ session
 
 **Returns:** <code>Promise&lt;{ session_frame: string; }&gt;</code>
 
---------------------
-
+---
 
 ### endSessionFrame(...)
 
@@ -372,8 +348,7 @@ endSessionFrame(options: { session_frame: string; }) => void
 | ------------- | --------------------------------------- |
 | **`options`** | <code>{ session_frame: string; }</code> |
 
---------------------
-
+---
 
 ### updateSessionFrameName(...)
 
@@ -387,8 +362,7 @@ updateSessionFrameName(options: { session_frame_name: string; session_frame: str
 
 **Returns:** <code>Promise&lt;{ session_frame: string; }&gt;</code>
 
---------------------
-
+---
 
 ### getVersion()
 
@@ -398,8 +372,7 @@ getVersion() => Promise<{ version: string; }>
 
 **Returns:** <code>Promise&lt;{ version: string; }&gt;</code>
 
---------------------
-
+---
 
 ### clear()
 
@@ -407,11 +380,9 @@ getVersion() => Promise<{ version: string; }>
 clear() => void
 ```
 
---------------------
-
+---
 
 ### Interfaces
-
 
 #### Map
 
