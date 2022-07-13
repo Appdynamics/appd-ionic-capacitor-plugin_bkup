@@ -11,6 +11,21 @@ AppDynamics Mobile EUM Agent Plugin
 5. In the ionic application then run 'npx cap sync'
 6. In the IOS application within the ionic application the cocoa pod install of
    the AppDynamics Agent should be done, referenced here: https://docs.appdynamics.com/appd/22.x/22.5/en/end-user-monitoring/mobile-real-user-monitoring/instrument-ios-applications/install-the-ios-sdk#id-.InstalltheiOSSDKv22.1-cocoapods-install
+7. In the Android application with the ionic application, there should be an /app/build.gradle file that
+   should have the below added below the apply plugin: 'com.android.application' line:
+
+buildscript {
+repositories {
+google()
+mavenCentral()
+}
+dependencies {
+classpath 'com.android.tools.build:gradle:7.2.1'
+classpath "com.appdynamics:appdynamics-gradle-plugin:22.2.2"
+}
+}
+
+apply plugin: 'adeum'
 
 ## API
 
