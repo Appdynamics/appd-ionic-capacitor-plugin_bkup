@@ -31,36 +31,36 @@ apply plugin: 'adeum'
 
 <docgen-index>
 
-- [`echo(...)`](#echo)
-- [`startTimer(...)`](#starttimer)
-- [`stopTimer(...)`](#stoptimer)
-- [`reportMetricWithName(...)`](#reportmetricwithname)
-- [`leaveBreadcrumb(...)`](#leavebreadcrumb)
-- [`setUserData(...)`](#setuserdata)
-- [`removeUserData(...)`](#removeuserdata)
-- [`beginCall(...)`](#begincall)
-- [`endCall(...)`](#endcall)
-- [`beginHttpRequest(...)`](#beginhttprequest)
-- [`reportDone(...)`](#reportdone)
-- [`withResponseCode(...)`](#withresponsecode)
-- [`withResponseContentLength(...)`](#withresponsecontentlength)
-- [`withRequestContentLength(...)`](#withrequestcontentlength)
-- [`withResponseHeaderFields(...)`](#withresponseheaderfields)
-- [`withRequestHeaderFields(...)`](#withrequestheaderfields)
-- [`withInstrumentationSource(...)`](#withinstrumentationsource)
-- [`withErrorMessage(...)`](#witherrormessage)
-- [`getCorrelationHeaders()`](#getcorrelationheaders)
-- [`startNextSession()`](#startnextsession)
-- [`unblockScreenshots()`](#unblockscreenshots)
-- [`blockScreenshots()`](#blockscreenshots)
-- [`screenshotsBlocked()`](#screenshotsblocked)
-- [`takeScreenshot()`](#takescreenshot)
-- [`startSessionFrame(...)`](#startsessionframe)
-- [`endSessionFrame(...)`](#endsessionframe)
-- [`updateSessionFrameName(...)`](#updatesessionframename)
-- [`getVersion()`](#getversion)
-- [`clear()`](#clear)
-- [Interfaces](#interfaces)
+* [`echo(...)`](#echo)
+* [`startTimer(...)`](#starttimer)
+* [`stopTimer(...)`](#stoptimer)
+* [`reportMetricWithName(...)`](#reportmetricwithname)
+* [`leaveBreadcrumb(...)`](#leavebreadcrumb)
+* [`setUserData(...)`](#setuserdata)
+* [`removeUserData(...)`](#removeuserdata)
+* [`beginCall(...)`](#begincall)
+* [`endCall(...)`](#endcall)
+* [`beginHttpRequest(...)`](#beginhttprequest)
+* [`reportDone(...)`](#reportdone)
+* [`withResponseCode(...)`](#withresponsecode)
+* [`withResponseContentLength(...)`](#withresponsecontentlength)
+* [`withRequestContentLength(...)`](#withrequestcontentlength)
+* [`withResponseHeaderFields(...)`](#withresponseheaderfields)
+* [`withRequestHeaderFields(...)`](#withrequestheaderfields)
+* [`withInstrumentationSource(...)`](#withinstrumentationsource)
+* [`withErrorMessage(...)`](#witherrormessage)
+* [`getCorrelationHeaders()`](#getcorrelationheaders)
+* [`startNextSession()`](#startnextsession)
+* [`unblockScreenshots()`](#unblockscreenshots)
+* [`blockScreenshots()`](#blockscreenshots)
+* [`screenshotsBlocked()`](#screenshotsblocked)
+* [`takeScreenshot()`](#takescreenshot)
+* [`startSessionFrame(...)`](#startsessionframe)
+* [`endSessionFrame(...)`](#endsessionframe)
+* [`updateSessionFrameName(...)`](#updatesessionframename)
+* [`getVersion()`](#getversion)
+* [`clear()`](#clear)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -79,79 +79,86 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 
 **Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
 
----
+--------------------
+
 
 ### startTimer(...)
 
 ```typescript
-startTimer(options: { name: string; }) => void
+startTimer(options: { name: string; }) => Promise<void>
 ```
 
 | Param         | Type                           |
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
----
+--------------------
+
 
 ### stopTimer(...)
 
 ```typescript
-stopTimer(options: { name: string; }) => void
+stopTimer(options: { name: string; }) => Promise<void>
 ```
 
 | Param         | Type                           |
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
----
+--------------------
+
 
 ### reportMetricWithName(...)
 
 ```typescript
-reportMetricWithName(options: { name: string; value: number; }) => void
+reportMetricWithName(options: { name: string; value: number; }) => Promise<void>
 ```
 
 | Param         | Type                                          |
 | ------------- | --------------------------------------------- |
 | **`options`** | <code>{ name: string; value: number; }</code> |
 
----
+--------------------
+
 
 ### leaveBreadcrumb(...)
 
 ```typescript
-leaveBreadcrumb(options: { name: string; }) => void
+leaveBreadcrumb(options: { name: string; }) => Promise<void>
 ```
 
 | Param         | Type                           |
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
----
+--------------------
+
 
 ### setUserData(...)
 
 ```typescript
-setUserData(options: { key: string; value: string; }) => void
+setUserData(options: { key: string; value: string; }) => Promise<void>
 ```
 
 | Param         | Type                                         |
 | ------------- | -------------------------------------------- |
 | **`options`** | <code>{ key: string; value: string; }</code> |
 
----
+--------------------
+
 
 ### removeUserData(...)
 
 ```typescript
-removeUserData(options: { key: string; }) => void
+removeUserData(options: { key: string; }) => Promise<void>
 ```
 
 | Param         | Type                          |
 | ------------- | ----------------------------- |
 | **`options`** | <code>{ key: string; }</code> |
 
----
+--------------------
+
 
 ### beginCall(...)
 
@@ -165,19 +172,21 @@ beginCall(options: { className: string; methodName: string; withArguments: []; }
 
 **Returns:** <code>Promise&lt;{ call_tracker: string; }&gt;</code>
 
----
+--------------------
+
 
 ### endCall(...)
 
 ```typescript
-endCall(options: { call_tracker: string; }) => void
+endCall(options: { call_tracker: string; }) => Promise<void>
 ```
 
 | Param         | Type                                   |
 | ------------- | -------------------------------------- |
 | **`options`** | <code>{ call_tracker: string; }</code> |
 
----
+--------------------
+
 
 ### beginHttpRequest(...)
 
@@ -191,103 +200,112 @@ beginHttpRequest(options: { url: string; }) => Promise<{ http_tracker: string; }
 
 **Returns:** <code>Promise&lt;{ http_tracker: string; }&gt;</code>
 
----
+--------------------
+
 
 ### reportDone(...)
 
 ```typescript
-reportDone(options: { http_tracker: string; }) => void
+reportDone(options: { http_tracker: string; }) => Promise<void>
 ```
 
 | Param         | Type                                   |
 | ------------- | -------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; }</code> |
 
----
+--------------------
+
 
 ### withResponseCode(...)
 
 ```typescript
-withResponseCode(options: { http_tracker: string; status_code: string; }) => void
+withResponseCode(options: { http_tracker: string; status_code: string; }) => Promise<void>
 ```
 
 | Param         | Type                                                        |
 | ------------- | ----------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; status_code: string; }</code> |
 
----
+--------------------
+
 
 ### withResponseContentLength(...)
 
 ```typescript
-withResponseContentLength(options: { http_tracker: string; content_length: number; }) => void
+withResponseContentLength(options: { http_tracker: string; content_length: number; }) => Promise<void>
 ```
 
 | Param         | Type                                                           |
 | ------------- | -------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; content_length: number; }</code> |
 
----
+--------------------
+
 
 ### withRequestContentLength(...)
 
 ```typescript
-withRequestContentLength(options: { http_tracker: string; content_length: number; }) => void
+withRequestContentLength(options: { http_tracker: string; content_length: number; }) => Promise<void>
 ```
 
 | Param         | Type                                                           |
 | ------------- | -------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; content_length: number; }</code> |
 
----
+--------------------
+
 
 ### withResponseHeaderFields(...)
 
 ```typescript
-withResponseHeaderFields(options: { http_tracker: string; http_headers: Map<string, string>; }) => void
+withResponseHeaderFields(options: { http_tracker: string; http_headers: Map<string, string>; }) => Promise<void>
 ```
 
 | Param         | Type                                                                                               |
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; http_headers: <a href="#map">Map</a>&lt;string, string&gt;; }</code> |
 
----
+--------------------
+
 
 ### withRequestHeaderFields(...)
 
 ```typescript
-withRequestHeaderFields(options: { http_tracker: string; http_headers: Map<string, string>; }) => void
+withRequestHeaderFields(options: { http_tracker: string; http_headers: Map<string, string>; }) => Promise<void>
 ```
 
 | Param         | Type                                                                                               |
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; http_headers: <a href="#map">Map</a>&lt;string, string&gt;; }</code> |
 
----
+--------------------
+
 
 ### withInstrumentationSource(...)
 
 ```typescript
-withInstrumentationSource(options: { http_tracker: string; information_source: string; }) => void
+withInstrumentationSource(options: { http_tracker: string; information_source: string; }) => Promise<void>
 ```
 
 | Param         | Type                                                               |
 | ------------- | ------------------------------------------------------------------ |
 | **`options`** | <code>{ http_tracker: string; information_source: string; }</code> |
 
----
+--------------------
+
 
 ### withErrorMessage(...)
 
 ```typescript
-withErrorMessage(options: { http_tracker: string; error_message: string; }) => void
+withErrorMessage(options: { http_tracker: string; error_message: string; }) => Promise<void>
 ```
 
 | Param         | Type                                                          |
 | ------------- | ------------------------------------------------------------- |
 | **`options`** | <code>{ http_tracker: string; error_message: string; }</code> |
 
----
+--------------------
+
 
 ### getCorrelationHeaders()
 
@@ -297,31 +315,35 @@ getCorrelationHeaders() => Promise<{ headers: Map<string, string>; }>
 
 **Returns:** <code>Promise&lt;{ headers: <a href="#map">Map</a>&lt;string, string&gt;; }&gt;</code>
 
----
+--------------------
+
 
 ### startNextSession()
 
 ```typescript
-startNextSession() => void
+startNextSession() => Promise<void>
 ```
 
----
+--------------------
+
 
 ### unblockScreenshots()
 
 ```typescript
-unblockScreenshots() => void
+unblockScreenshots() => Promise<void>
 ```
 
----
+--------------------
+
 
 ### blockScreenshots()
 
 ```typescript
-blockScreenshots() => void
+blockScreenshots() => Promise<void>
 ```
 
----
+--------------------
+
 
 ### screenshotsBlocked()
 
@@ -331,15 +353,17 @@ screenshotsBlocked() => Promise<{ screenshots_blocked: boolean; }>
 
 **Returns:** <code>Promise&lt;{ screenshots_blocked: boolean; }&gt;</code>
 
----
+--------------------
+
 
 ### takeScreenshot()
 
 ```typescript
-takeScreenshot() => void
+takeScreenshot() => Promise<void>
 ```
 
----
+--------------------
+
 
 ### startSessionFrame(...)
 
@@ -353,19 +377,21 @@ startSessionFrame(options: { session_frame_name: string; }) => Promise<{ session
 
 **Returns:** <code>Promise&lt;{ session_frame: string; }&gt;</code>
 
----
+--------------------
+
 
 ### endSessionFrame(...)
 
 ```typescript
-endSessionFrame(options: { session_frame: string; }) => void
+endSessionFrame(options: { session_frame: string; }) => Promise<void>
 ```
 
 | Param         | Type                                    |
 | ------------- | --------------------------------------- |
 | **`options`** | <code>{ session_frame: string; }</code> |
 
----
+--------------------
+
 
 ### updateSessionFrameName(...)
 
@@ -379,7 +405,8 @@ updateSessionFrameName(options: { session_frame_name: string; session_frame: str
 
 **Returns:** <code>Promise&lt;{ session_frame: string; }&gt;</code>
 
----
+--------------------
+
 
 ### getVersion()
 
@@ -389,17 +416,20 @@ getVersion() => Promise<{ version: string; }>
 
 **Returns:** <code>Promise&lt;{ version: string; }&gt;</code>
 
----
+--------------------
+
 
 ### clear()
 
 ```typescript
-clear() => void
+clear() => Promise<void>
 ```
 
----
+--------------------
+
 
 ### Interfaces
+
 
 #### Map
 

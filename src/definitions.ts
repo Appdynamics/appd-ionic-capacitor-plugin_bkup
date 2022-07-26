@@ -1,65 +1,65 @@
 /// <reference types="@capacitor/cli" />
 export interface ADEUMMobileCapacitorPluginPlugin {
   echo(options: { value: string }): Promise<{ value: string }>;
-  startTimer(options: { name: string }): void; //ios
-  stopTimer(options: { name: string }): void; //ios
-  reportMetricWithName(options: { name: string; value: number }): void; //ios
-  leaveBreadcrumb(options: { name: string }): void; //ios
-  setUserData(options: { key: string; value: string }): void; //ios
-  removeUserData(options: { key: string }): void; //ios
+  startTimer(options: { name: string }): Promise<void>;
+  stopTimer(options: { name: string }): Promise<void>; 
+  reportMetricWithName(options: { name: string; value: number }): Promise<void>; 
+  leaveBreadcrumb(options: { name: string }): Promise<void>; 
+  setUserData(options: { key: string; value: string }): Promise<void>; 
+  removeUserData(options: { key: string }): Promise<void>; 
   beginCall(options: {
     className: string;
     methodName: string;
     withArguments: [];
-  }): Promise<{ call_tracker: string }>; //ios
-  endCall(options: { call_tracker: string }): void; //ios
-  beginHttpRequest(options: { url: string }): Promise<{ http_tracker: string }>; //ios
-  reportDone(options: { http_tracker: string }): void; //ios
+  }): Promise<{ call_tracker: string }>; 
+  endCall(options: { call_tracker: string }): Promise<void>; 
+  beginHttpRequest(options: { url: string }): Promise<{ http_tracker: string }>; 
+  reportDone(options: { http_tracker: string }): Promise<void>; 
   withResponseCode(options: {
     http_tracker: string;
     status_code: string;
-  }): void; //ios
+  }): Promise<void>;
   withResponseContentLength(options: {
     http_tracker: string;
     content_length: number;
-  }): void; //ios
+  }): Promise<void>;
   withRequestContentLength(options: {
     http_tracker: string;
     content_length: number;
-  }): void; //ios
+  }): Promise<void>; 
   withResponseHeaderFields(options: {
     http_tracker: string;
     http_headers: Map<string, string>;
-  }): void; //ios
+  }): Promise<void>; 
   withRequestHeaderFields(options: {
     http_tracker: string;
     http_headers: Map<string, string>;
-  }): void; //ios
+  }): Promise<void>; 
   withInstrumentationSource(options: {
     http_tracker: string;
     information_source: string;
-  }): void; //ios
+  }): Promise<void>;
   withErrorMessage(options: {
     http_tracker: string;
     error_message: string;
-  }): void; //ios
-  getCorrelationHeaders(): Promise<{ headers: Map<string, string> }>; //ios
-  startNextSession(): void; //ios
-  unblockScreenshots(): void; //ios
-  blockScreenshots(): void; //ios
-  screenshotsBlocked(): Promise<{ screenshots_blocked: boolean }>; //ios
-  takeScreenshot(): void; //ios
+  }): Promise<void>;
+  getCorrelationHeaders(): Promise<{ headers: Map<string, string> }>;
+  startNextSession(): Promise<void>; 
+  unblockScreenshots(): Promise<void>; 
+  blockScreenshots(): Promise<void>; 
+  screenshotsBlocked(): Promise<{ screenshots_blocked: boolean }>; 
+  takeScreenshot(): Promise<void>; 
   startSessionFrame(options: {
     session_frame_name: string;
-  }): Promise<{ session_frame: string }>; //ios
-  endSessionFrame(options: { session_frame: string }): void; //ios
+  }): Promise<{ session_frame: string }>; 
+  endSessionFrame(options: { session_frame: string }): Promise<void>;
   updateSessionFrameName(options: {
     session_frame_name: string;
     session_frame: string;
-  }): Promise<{ session_frame: string }>; //ios
+  }): Promise<{ session_frame: string }>; 
 
-  getVersion(): Promise<{ version: string }>; //android only
-  clear(): void; //ios only
+  getVersion(): Promise<{ version: string }>; 
+  clear(): Promise<void>;
 }
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
